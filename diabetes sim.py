@@ -59,6 +59,12 @@ def startSim():
     #
     #Fat assumes about 10% of body weight is fat.
     #This is average for a human female.
+    #
+    #
+    #OTHER STATS
+    #--------------------
+    #1 IU insulin = 0.01mL insulin
+    #1 mL insulin = 100 IU insulin
     
     glucose = 275
     glycogen = 100
