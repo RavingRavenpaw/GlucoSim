@@ -10,6 +10,9 @@ import platform
 
 #http://diatribe.org/issues/55/thinking-like-a-pancreas
 #http://www.ncbi.nlm.nih.gov/pubmed/16441980
+#http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3714432/
+#http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3248697/
+#https://www.diabeteshealth.com/insulin-to-carbohydrate-ratios/
 
 ''' IMPLEMENTATION & PROGRAM INFO
 So basically, I need to implement a few things:
@@ -110,14 +113,17 @@ carb_insulin_ratio = 6000
 global glycogenolysis_ratio
 glycogenolysis_ratio = 2
 #Grams of glycogen that one unit/one mg of glucagon will release
+#NOT FACTUAL, FOR SIMULATION TESTING PURPOSES ONLY
 
 global glycogenesis_ratio
-glycogenesis_ratio = 4
-#Grams of glucose that can synthesize one gram of glycogen
+glycogenesis_ratio = 0.25
+#Grams of glycogen that one gram of glucose will synthesize
+#NOT FACTUAL, FOR SIMULATION TESTING PURPOSES ONLY
 
 global glycogen_to_glucose_ratio
 glycogen_to_glucose_ratio = 2
 #Grams of glucose released from one gram of glycogen
+#NOT FACTUAL, FOR SIMULATION TESTING PURPOSES ONLY
 
 global fat_nonessential
 fat_nonessential = 16983.0
@@ -134,6 +140,8 @@ fat_total = 19813.0
 global metabolic_rate
 metabolic_rate = 0.25
 #Number used to represent metabolic activity of the body
+#NOT FACTUAL, FOR SIMULATION OF METABOLIC ACTIVITY
+#TO ENHANCE REALISM OF SIMULATION ONLY
 
 global blood_volume
 blood_volume = 46.175
@@ -143,7 +151,39 @@ blood_volume = 46.175
 global current_OS
 current_OS = platform.system()
 
-def sim():
+def calculateSimNumbers():
+    global glucose_blood_level
+    global glucose_blood
+    global insulin_blood
+    global glucagon_blood
+    global glycogen_liver
+    global glycogen_muscles
+    global carb_insulin_ratio
+    global glycogenolysis_ratio
+    global glycogenesis_ratio
+    global glycogen_to_glucose_ratio
+    global fat_total
+    global fat_essential
+    global fat_nonessential
+    global metabolic_rate
+    global blood_volume
+
+    #glucose_blood_level = (glucose_blood_level - insulin_blood + (glucagon_blood*12.5) - (metabolic_rate))
+    glucose_blood_level = (glucose_blood/blood_volume)
+    #- (carb_insulin_ratio*insulin_blood) + (glycogenolysis_ratio*glucagon_blood*glycogen_to_glucose_ratio))
+    glycogen_liver -= (glucagon_blood*glycogenolysis_ratio)
+    glycogen_liver += (insulin_blood/1000000*carb_insulin_ratio*glycogenesis_ratio)
+    glucose_blood += (glucagon_blood*glycogenolysis_ratio*glycogen_to_glucose_ratio)
+    glucose_blood -= (insulin_blood/1000000*carb_insulin_ratio)
+    glucose_blood -= metabolic_rate
+    #glycogen_liver -+ (insulin_blood*
+    #insulin_blood = insulin_blood - insulin_blood
+    #glucagon_blood = glucagon_blood - glucagon_blood
+    if glucose_blood_level < 0.0:
+        glucose_blood_level = 0.0
+    updateDisplay()
+
+def updateDisplay():
     global glucose_blood_level
     global glucose_blood
     global insulin_blood
@@ -166,14 +206,6 @@ def sim():
     else:
         os.system("clear")
 
-    #glucose_blood_level = (glucose_blood_level - insulin_blood + (glucagon_blood*12.5) - (metabolic_rate))
-    glucose_blood_level = ((glucose_blood - (carb_insulin_ratio*insulin_blood) + (glycogenolysis_ratio*glucagon_blood*glycogen_to_glucose_ratio))/blood_volume)
-    glycogen_liver += (glucagon_blood*glycogenolysis_ratio)
-    insulin_blood = insulin_blood - insulin_blood
-    glucagon_blood = glucagon_blood - glucagon_blood
-
-    if glucose_blood_level < 0.0:
-        glucose_blood_level = 0.0
     print ("Diabetes/Body Energy Simulation Project")
     print ("2015 - 2016, created by John Kozlosky")
     print ("")
@@ -185,6 +217,26 @@ def sim():
     print ("Fat: " + str(fat_total) + "g total, " + str(fat_nonessential) + "g nonessential, " + str(fat_essential) + "g essential")
     print ("Metabolic activity level: " + str(metabolic_rate))
     print ("")
+
+    command()
+
+def command():
+    global glucose_blood_level
+    global glucose_blood
+    global insulin_blood
+    global glucagon_blood
+    global glycogen_liver
+    global glycogen_muscles
+    global carb_insulin_ratio
+    global glycogenolysis_ratio
+    global glycogenesis_ratio
+    global glycogen_to_glucose_ratio
+    global fat_total
+    global fat_essential
+    global fat_nonessential
+    global metabolic_rate
+    global blood_volume
+
 
     command = str(input(">"))
 
@@ -221,9 +273,8 @@ def sim():
     if command == "exit":
         if input("Are you sure you want to exit? (y/n)") == "y":
             sys.exit()
-
         else:
-            sim()
+            command()
 
     if command == "help":
         print("SIMULATION CONTROL")
@@ -241,5 +292,9 @@ def sim():
         print("exit - exit the program")
         print("")
         os.system('pause')
-    sim()
-sim()
+
+    if command == "":
+        calculateSimNumbers()
+
+    calculateSimNumbers()
+calculateSimNumbers()
