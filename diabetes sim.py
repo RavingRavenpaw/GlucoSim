@@ -1,4 +1,6 @@
 import os
+import sys
+import platform
 
 #Diabetes/Body Energy Simulation Project
 #
@@ -7,6 +9,7 @@ import os
 #when I get what I need figured out.
 
 #http://diatribe.org/issues/55/thinking-like-a-pancreas
+#http://www.ncbi.nlm.nih.gov/pubmed/16441980
 
 ''' IMPLEMENTATION & PROGRAM INFO
 So basically, I need to implement a few things:
@@ -14,7 +17,7 @@ So basically, I need to implement a few things:
     Body uses ingested glucose from food and stores some of it as glycogen
     in the liver.
     
-    1.5  Glycogenolysis & Gluconeogenesis
+    1.5  Glycogenolysis & Glycogenesis
     Liver releases glycogen and converts it to glucose or absorbs glucose and synthesizes glycogen.
     Glycogenolysis
     
@@ -34,14 +37,17 @@ So basically, I need to implement a few things:
 ''' PATIENT INFO
     ----------------------
     Sex: Female
-    Weight: 156lb
-    Body fat percentage: 10%
-    Weight from fat: 15.6lb / 7.076kg / 7067g 
-    
-    
+    Weight: 156lb / 70.76kg
+    Body fat percentage: 28%
+    Weight from fat: 43.68lb / 19.813kg / 19,813g
+    Essential fat: 4%
+    Weight from essential fat: 6.24lb / 2.830kg / 2,830g
+    Nonesssential fat: 16,983g
+    Blood volume = 46.175dL
+'''
 
-    Initialize the patient's virtual "body."
-    
+''' SCIENTIFIC BASIS OF VARIABLE VALUES
+
     These variables are based off of:
     For things that need to be replenished or synthesized constantly, they are
     based on an average non-diabetic fasting blood sugar.
@@ -62,71 +68,127 @@ So basically, I need to implement a few things:
     Glucagon assumes about 1.2 mg/mL of glucagon is present in the blood.
     This is average for a fasting human.
     
-    Fat assumes about 10% of body weight is fat.
+    Fat assumes about 28% of body weight is fat and 4% is essential fat.
     This is average for a human female.
-    
-    
-    OTHER STATS
+'''
+
+''' OTHER STATS
     --------------------
     1 IU insulin = 34.7 μg pure crystalline insulin
     1 IU glucagon = 1mg glucagon
 '''
 
 #VARIABLE INITIALIZATION
+global glucose_blood_level
+glucose_blood_level = 100.0
+#Glucose level/concentration of the blood in mg/dL
+
 global glucose_blood
-glucose_blood = 100.0
-#How much glucose is present in the blood in mg/dL
+glucose_blood = 4617.5
+#Glucose present in the blood in mg
 
 global glycogen_liver
-glycogen_liver = 100.0
-#How much glycogen is stored in the liver in grams
+glycogen_liver = 100000
+#Glycogen stored in the liver in mg
 
 global glycogen_muscles
-glycogen_muscles = 500.0
-#How much glycogen is stored in the muscles in grams
+glycogen_muscles = 500000
+#Glycogen stored in the muscles in mg
 
 global insulin_blood
 insulin_blood = 15.0
-#How much insulin is present in the blood in μU/mL
+#Insulin present in the blood in μU/mL
 
 global glucagon_blood
 glucagon_blood = 1.2
-#How much glucagon is present in the blood in in mg/mL
+#Glucagon present in the blood in in mg/mL
 
-global fat
-fat = 7067
-#How much fat is stored in adipose tissue in grams
+global carb_insulin_ratio
+carb_insulin_ratio = 6000
+#Amount of mg of carbohydrate that one unit of insulin will metabolize/cover
+
+global glycogenolysis_ratio
+glycogenolysis_ratio = 2
+#Grams of glycogen that one unit/one mg of glucagon will release
+
+global glycogenesis_ratio
+glycogenesis_ratio = 4
+#Grams of glucose that can synthesize one gram of glycogen
+
+global glycogen_to_glucose_ratio
+glycogen_to_glucose_ratio = 2
+#Grams of glucose released from one gram of glycogen
+
+global fat_nonessential
+fat_nonessential = 16983.0
+#Nonessential (burnable) fat stored in adipose tissue in grams
+
+global fat_essential
+fat_essential = 2830.0
+#Essential (non-burnable) fat stored in adipose tissue in grams
+
+global fat_total
+fat_total = 19813.0
+#Total fat in adipose tissue in grams
 
 global metabolic_rate
 metabolic_rate = 0.25
 #Number used to represent metabolic activity of the body
-        
+
+global blood_volume
+blood_volume = 46.175
+#Volume of blood in dL
+
+
+global current_OS
+current_OS = platform.system()
+
 def sim():
+    global glucose_blood_level
     global glucose_blood
     global insulin_blood
     global glucagon_blood
     global glycogen_liver
     global glycogen_muscles
-    global fat
+    global carb_insulin_ratio
+    global glycogenolysis_ratio
+    global glycogenesis_ratio
+    global glycogen_to_glucose_ratio
+    global fat_total
+    global fat_essential
+    global fat_nonessential
     global metabolic_rate
+    global blood_volume
 
-    os.system('cls')
+    if current_OS == "Windows":
+        os.system('cls')
 
-    glucose_blood = (glucose_blood - insulin_blood + (glucagon_blood*12.5) - (metabolic_rate))
-    print ("Blood glucose: " + str(glucose_blood) + "mg/dL")
-    print ("Hepatic glycogen: " + str(glycogen_liver) + "g")
-    print ("Muscular glycogen: " + str(glycogen_muscles) + "g")
+    else:
+        os.system("clear")
+
+    #glucose_blood_level = (glucose_blood_level - insulin_blood + (glucagon_blood*12.5) - (metabolic_rate))
+    glucose_blood_level = ((glucose_blood - (carb_insulin_ratio*insulin_blood) + (glycogenolysis_ratio*glucagon_blood*glycogen_to_glucose_ratio))/blood_volume)
+    glycogen_liver += (glucagon_blood*glycogenolysis_ratio)
+    insulin_blood = insulin_blood - insulin_blood
+    glucagon_blood = glucagon_blood - glucagon_blood
+
+    if glucose_blood_level < 0.0:
+        glucose_blood_level = 0.0
+    print ("Diabetes/Body Energy Simulation Project")
+    print ("2015 - 2016, created by John Kozlosky")
+    print ("")
+    print ("Blood glucose level: " + str(glucose_blood_level) + "mg/dL")
+    print ("Blood glucose: " + str(glucose_blood) + "mg")
+    print ("Glycogen: " + str(glycogen_liver) + "mg hepatic, " + str(glycogen_muscles) + "mg muscular")
     print ("Blood insulin: " + str(insulin_blood) + "uU/mL")
     print ("Blood glucagon: " + str(glucagon_blood) + "mg/mL")
-    print ("Fat: " + str(fat) + "g")
+    print ("Fat: " + str(fat_total) + "g total, " + str(fat_nonessential) + "g nonessential, " + str(fat_essential) + "g essential")
     print ("Metabolic activity level: " + str(metabolic_rate))
     print ("")
-    if glucose_blood < 0.0:
-        glucose_blood = 0.0
 
-    command = str(input())
+    command = str(input(">"))
 
-    if command == "set bg":
+    if command == "set blood glucose ":
         glucose_blood = float(input("New blood glucose: "))
 
     if command == "set insulin":
@@ -140,5 +202,44 @@ def sim():
 
     if command == "set glycogen_muscles":
         glycogen_muscles = float(input("New muscular glycogen level: "))
+
+    if command == "set fat_total":
+        fat_total = float(input("New total fat: "))
+
+    if command == "set fat_nonessential":
+        fat_nonessential = float(input("New nonessential fat: "))
+
+    if command == "set fat_essential":
+        fat_essential = float(input("New essential fat: "))
+
+    if command == "set metabolic_rate":
+        metabolic_rate = float(input("New metabolic activity level: "))
+
+    if command == "set blood_volume":
+        blood_volume = float(input("New blood volume: "))
+
+    if command == "exit":
+        if input("Are you sure you want to exit? (y/n)") == "y":
+            sys.exit()
+
+        else:
+            sim()
+
+    if command == "help":
+        print("SIMULATION CONTROL")
+        print("-----------------------")
+        print("set bg - set new value for blood glucose level")
+        print("set insulin - set new value for blood insulin level")
+        print("set glucagon - set new value for blood glucagon level")
+        print("set glycogen_liver - set new value for glycogen in liver")
+        print("set glycogen_muscles - set new value for glycogen in muscles")
+        print("set metabolic_rate - set metabolic activity level")
+        print("")
+        print("OTHER")
+        print("----------------------")
+        print("help - show this menu")
+        print("exit - exit the program")
+        print("")
+        os.system('pause')
     sim()
 sim()
