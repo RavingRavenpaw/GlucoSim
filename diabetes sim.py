@@ -8,11 +8,20 @@ import platform
 #I'll start actual programming and organizing more things into variables
 #when I get what I need figured out.
 
+#My docs
 #http://diatribe.org/issues/55/thinking-like-a-pancreas
 #http://www.ncbi.nlm.nih.gov/pubmed/16441980
 #http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3714432/
 #http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3248697/
 #https://www.diabeteshealth.com/insulin-to-carbohydrate-ratios/
+#http://www.austincc.edu/apreview/EmphasisItems/Glucose_regulation.html
+
+#Mayer Docs
+#http://www.jstor.org/stable/1736097?seq=1#page_scan_tab_contents
+#http://www.ncbi.nlm.nih.gov/books/NBK21190/
+#http://diabetes.diabetesjournals.org/content/diabetes/49/12/2094.full.pdf
+#http://www.jci.org/articles/view/106445
+
 
 ''' IMPLEMENTATION & PROGRAM INFO
 So basically, I need to implement a few things:
@@ -80,14 +89,21 @@ So basically, I need to implement a few things:
     1 IU insulin = 34.7 μg pure crystalline insulin
     1 IU glucagon = 1mg glucagon?
 
+
+    BIC = Blood insulin concentration
+    BGC = blood glucagon concentration
+
     Insulin concentration: μU/mL
     Glucagon concentration: pU/mL
 
-    Fasting blood insulin concentration: ~15μU/mL
-    Fasting blood glucagon concentration: 1.2pg/mL?
+    Fasting BIC: 15 - 40μU/mL
+    Fasting BGC: 90 - 140pg/mL / 150pg/mL
 
-    Mealtime blood insulin concentration: ~80μU/mL?
-    Mealtime blood glucagon concentration: ?
+    Mealtime BIC: ~80μU/mL?
+    Mealtime BGC: ?
+
+    Urgent low (~20mg/dL) BIC: ?
+    Urgent low BGC: 500pg/mL
 '''
 
 #VARIABLE INITIALIZATION
@@ -112,15 +128,15 @@ insulin_blood = 15.0
 #Insulin present in the blood in μU/mL
 
 global glucagon_blood
-glucagon_blood = 1.2
-#Glucagon present in the blood in in mg/mL
+glucagon_blood = 140
+#Glucagon present in the blood in in pg/mL
 
 global carb_insulin_ratio
 carb_insulin_ratio = 6000
 #Amount of mg of carbohydrate that one unit of insulin will metabolize/cover
 
 global glycogenolysis_ratio
-glycogenolysis_ratio = 10
+glycogenolysis_ratio = 1
 #Grams of glycogen that one unit/one pg of glucagon will release
 #NOT FACTUAL, FOR SIMULATION TESTING PURPOSES ONLY
 
@@ -130,7 +146,7 @@ glycogenesis_ratio = 1
 #NOT FACTUAL, FOR SIMULATION TESTING PURPOSES ONLY
 
 global glycogen_to_glucose_ratio
-glycogen_to_glucose_ratio = 2
+glycogen_to_glucose_ratio = 1
 #Grams of glucose released from one gram of glycogen
 #NOT FACTUAL, FOR SIMULATION TESTING PURPOSES ONLY
 
@@ -147,7 +163,7 @@ fat_total = 19813.0
 #Total fat in adipose tissue in grams
 
 global metabolic_rate
-metabolic_rate = 5
+metabolic_rate = 1
 #Number used to represent metabolic activity of the body
 #NOT FACTUAL, FOR SIMULATION OF METABOLIC ACTIVITY
 #TO ENHANCE REALISM OF SIMULATION ONLY
