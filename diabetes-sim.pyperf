@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ProfilingTarget xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ProjectTarget>
+    <TargetProject>fca61a71-ce1b-407e-b3fc-29da1f2eacb1</TargetProject>
+    <FriendlyName>diabetes-sim</FriendlyName>
+  </ProjectTarget>
+  <Reports>
+    <Report>
+      <Filename>C:\Users\chrom\AppData\Local\Temp\diabetes-sim_20160914.vsp</Filename>
+    </Report>
+  </Reports>
+</ProfilingTarget>

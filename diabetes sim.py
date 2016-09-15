@@ -75,10 +75,19 @@ So basically, I need to implement a few things:
     This is average for a human female.
 '''
 
-''' OTHER STATS
+''' UNITS & OTHER STATS
     --------------------
     1 IU insulin = 34.7 μg pure crystalline insulin
-    1 IU glucagon = 1mg glucagon
+    1 IU glucagon = 1mg glucagon?
+
+    Insulin concentration: μU/mL
+    Glucagon concentration: pU/mL
+
+    Fasting blood insulin concentration: ~15μU/mL
+    Fasting blood glucagon concentration: 1.2pg/mL?
+
+    Mealtime blood insulin concentration: ~80μU/mL?
+    Mealtime blood glucagon concentration: ?
 '''
 
 #VARIABLE INITIALIZATION
@@ -111,12 +120,12 @@ carb_insulin_ratio = 6000
 #Amount of mg of carbohydrate that one unit of insulin will metabolize/cover
 
 global glycogenolysis_ratio
-glycogenolysis_ratio = 2
-#Grams of glycogen that one unit/one mg of glucagon will release
+glycogenolysis_ratio = 10
+#Grams of glycogen that one unit/one pg of glucagon will release
 #NOT FACTUAL, FOR SIMULATION TESTING PURPOSES ONLY
 
 global glycogenesis_ratio
-glycogenesis_ratio = 0.25
+glycogenesis_ratio = 1
 #Grams of glycogen that one gram of glucose will synthesize
 #NOT FACTUAL, FOR SIMULATION TESTING PURPOSES ONLY
 
@@ -138,7 +147,7 @@ fat_total = 19813.0
 #Total fat in adipose tissue in grams
 
 global metabolic_rate
-metabolic_rate = 0.25
+metabolic_rate = 5
 #Number used to represent metabolic activity of the body
 #NOT FACTUAL, FOR SIMULATION OF METABOLIC ACTIVITY
 #TO ENHANCE REALISM OF SIMULATION ONLY
@@ -146,10 +155,6 @@ metabolic_rate = 0.25
 global blood_volume
 blood_volume = 46.175
 #Volume of blood in dL
-
-
-global current_OS
-current_OS = platform.system()
 
 def calculateSimNumbers():
     global glucose_blood_level
@@ -169,13 +174,19 @@ def calculateSimNumbers():
     global blood_volume
 
     #glucose_blood_level = (glucose_blood_level - insulin_blood + (glucagon_blood*12.5) - (metabolic_rate))
-    glucose_blood_level = (glucose_blood/blood_volume)
     #- (carb_insulin_ratio*insulin_blood) + (glycogenolysis_ratio*glucagon_blood*glycogen_to_glucose_ratio))
-    glycogen_liver -= (glucagon_blood*glycogenolysis_ratio)
-    glycogen_liver += (insulin_blood/1000000*carb_insulin_ratio*glycogenesis_ratio)
-    glucose_blood += (glucagon_blood*glycogenolysis_ratio*glycogen_to_glucose_ratio)
-    glucose_blood -= (insulin_blood/1000000*carb_insulin_ratio)
-    glucose_blood -= metabolic_rate
+    if glycogen_liver > 0:
+        #Release glycogen & convert to glucose
+        glycogen_liver -= (glucagon_blood*glycogenolysis_ratio)
+        glucose_blood += (glucagon_blood*glycogenolysis_ratio*glycogen_to_glucose_ratio)
+
+    if glycogen_liver < 100000:
+        #Absorb glucose & convert to glycogen
+        glycogen_liver += (insulin_blood/1000000*carb_insulin_ratio*glycogenesis_ratio)
+        glucose_blood -= (insulin_blood/1000000*carb_insulin_ratio)
+    
+    glucose_blood -= metabolic_rate*10
+    glucose_blood_level = (glucose_blood/blood_volume)
     #glycogen_liver -+ (insulin_blood*
     #insulin_blood = insulin_blood - insulin_blood
     #glucagon_blood = glucagon_blood - glucagon_blood
@@ -200,7 +211,7 @@ def updateDisplay():
     global metabolic_rate
     global blood_volume
 
-    if current_OS == "Windows":
+    if platform.system() == "Windows":
         os.system('cls')
 
     else:
@@ -213,7 +224,7 @@ def updateDisplay():
     print ("Blood glucose: " + str(glucose_blood) + "mg")
     print ("Glycogen: " + str(glycogen_liver) + "mg hepatic, " + str(glycogen_muscles) + "mg muscular")
     print ("Blood insulin: " + str(insulin_blood) + "uU/mL")
-    print ("Blood glucagon: " + str(glucagon_blood) + "mg/mL")
+    print ("Blood glucagon: " + str(glucagon_blood) + "pg/mL")
     print ("Fat: " + str(fat_total) + "g total, " + str(fat_nonessential) + "g nonessential, " + str(fat_essential) + "g essential")
     print ("Metabolic activity level: " + str(metabolic_rate))
     print ("")
@@ -292,9 +303,8 @@ def command():
         print("exit - exit the program")
         print("")
         os.system('pause')
-
-    if command == "":
-        calculateSimNumbers()
-
+    
     calculateSimNumbers()
+
+#Initialize simulation
 calculateSimNumbers()
