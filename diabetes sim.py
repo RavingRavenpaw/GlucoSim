@@ -1,6 +1,8 @@
 import os
 import sys
 import platform
+import matplotlib.pyplot as plt
+import numpy as np
 
 #Diabetes/Body Energy Simulation Project
 #
@@ -128,7 +130,7 @@ insulin_blood = 15.0
 #Insulin present in the blood in μU/mL
 
 global glucagon_blood
-glucagon_blood = 140
+glucagon_blood = 20.00
 #Glucagon present in the blood in in pg/mL
 
 global carb_insulin_ratio
@@ -163,7 +165,7 @@ fat_total = 19813.0
 #Total fat in adipose tissue in grams
 
 global metabolic_rate
-metabolic_rate = 1
+metabolic_rate = 0
 #Number used to represent metabolic activity of the body
 #NOT FACTUAL, FOR SIMULATION OF METABOLIC ACTIVITY
 #TO ENHANCE REALISM OF SIMULATION ONLY
@@ -171,6 +173,15 @@ metabolic_rate = 1
 global blood_volume
 blood_volume = 46.175
 #Volume of blood in dL
+
+global bgData
+global insulinData
+global glucagonData
+bgData = []
+insulinData = []
+glucagonData = []
+#Lists for keeping past data on blood glucose level and insulin
+#and glucagon concentrations.
 
 def calculateSimNumbers():
     global glucose_blood_level
@@ -188,6 +199,11 @@ def calculateSimNumbers():
     global fat_nonessential
     global metabolic_rate
     global blood_volume
+    global bgRateOfChange
+    global bgData
+    global insulinData
+    global glucagonData
+    global ROC_arrows
 
     #glucose_blood_level = (glucose_blood_level - insulin_blood + (glucagon_blood*12.5) - (metabolic_rate))
     #- (carb_insulin_ratio*insulin_blood) + (glycogenolysis_ratio*glucagon_blood*glycogen_to_glucose_ratio))
@@ -198,8 +214,8 @@ def calculateSimNumbers():
 
     if glycogen_liver < 100000:
         #Absorb glucose & convert to glycogen
-        glycogen_liver += (insulin_blood/1000000*carb_insulin_ratio*glycogenesis_ratio)
-        glucose_blood -= (insulin_blood/1000000*carb_insulin_ratio)
+        glycogen_liver += ((insulin_blood/1000000)*carb_insulin_ratio*glycogenesis_ratio)
+        glucose_blood -= ((insulin_blood/1000000)*carb_insulin_ratio)
     
     glucose_blood -= metabolic_rate*10
     glucose_blood_level = (glucose_blood/blood_volume)
@@ -208,6 +224,43 @@ def calculateSimNumbers():
     #glucagon_blood = glucagon_blood - glucagon_blood
     if glucose_blood_level < 0.0:
         glucose_blood_level = 0.0
+
+    bgData.append(glucose_blood_level)
+    insulinData.append(insulin_blood)
+    glucagonData.append(glucagon_blood)
+
+    if len(bgData) >=3:
+        bgRateOfChange = ((bgData[-1] - bgData[-2]) + (bgData[-2] - bgData[-3]))/2
+        #Steady
+        if bgRateOfChange < 1 and bgRateOfChange > -1:
+            #ROC_arrows = "→"
+            ROC_arrows = "-> steady"
+
+        #Rising
+        if bgRateOfChange >= 1 and bgRateOfChange < 2:
+            #ROC_arrows = "↗"
+            ROC_arrows = "/^ slowly rising"
+        if bgRateOfChange >= 2 and bgRateOfChange > 3:
+            #ROC_arrows = "↑"
+            ROC_arrows = "^|^ rising"
+        if bgRateOfChange >= 3:
+            #ROC_arrows = "⇈"
+            ROC_arrows = "^|^ ^|^ rapidly rising"
+
+        #Falling
+        if bgRateOfChange <= -1 and bgRateOfChange > -2:
+            #ROC_arrows = "↘"
+            ROC_arrows = "\\v slowly falling"
+        if bgRateOfChange <= -2 and bgRateOfChange > -3:
+            #ROC_arrows = "↓"
+            ROC_arrows = "v|v falling"
+        if bgRateOfChange <= -3:
+            #ROC_arrows = "⇊"
+            ROC_arrows = "v|v v|v RAPIDLY FALLING /!\\"
+    else:
+        bgRateOfChange = 'N/A'
+        ROC_arrows = ""
+    
     updateDisplay()
 
 def updateDisplay():
@@ -226,6 +279,11 @@ def updateDisplay():
     global fat_nonessential
     global metabolic_rate
     global blood_volume
+    global bgRateOfChange
+    global bgData
+    global insulinData
+    global glucagonData
+    global ROC_arrows
 
     if platform.system() == "Windows":
         os.system('cls')
@@ -236,13 +294,13 @@ def updateDisplay():
     print ("Diabetes/Body Energy Simulation Project")
     print ("2015 - 2016, created by John Kozlosky")
     print ("")
-    print ("Blood glucose level: " + str(glucose_blood_level) + "mg/dL")
-    print ("Blood glucose: " + str(glucose_blood) + "mg")
-    print ("Glycogen: " + str(glycogen_liver) + "mg hepatic, " + str(glycogen_muscles) + "mg muscular")
-    print ("Blood insulin: " + str(insulin_blood) + "uU/mL")
-    print ("Blood glucagon: " + str(glucagon_blood) + "pg/mL")
-    print ("Fat: " + str(fat_total) + "g total, " + str(fat_nonessential) + "g nonessential, " + str(fat_essential) + "g essential")
-    print ("Metabolic activity level: " + str(metabolic_rate))
+    print ("Blood glucose level: " + str(round(glucose_blood_level, 2)) + "mg/dL " + ROC_arrows)
+    print ("Blood glucose: " + str(round((glucose_blood/1000), 2)) + "g")
+    print ("Glycogen: " + str(round((glycogen_liver/1000), 2)) + "g hepatic, " + str(round(glycogen_muscles, 2)/1000) + "g muscular")
+    print ("Blood insulin: " + str(round(insulin_blood, 2)) + "uU/mL")
+    print ("Blood glucagon: " + str(round(glucagon_blood, 2)) + "pg/mL")
+    print ("Fat: " + str(round(fat_total)) + "g total, " + str(round(fat_nonessential)) + "g nonessential, " + str(round(fat_essential)) + "g essential")
+    print ("Metabolic activity level: " + str(round(metabolic_rate, 4)))
     print ("")
 
     command()
