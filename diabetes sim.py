@@ -17,6 +17,8 @@ import numpy as np
 #http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3248697/
 #https://www.diabeteshealth.com/insulin-to-carbohydrate-ratios/
 #http://www.austincc.edu/apreview/EmphasisItems/Glucose_regulation.html
+#file:///C:/Users/chrom/Downloads/FSI_insulin.pdfNN
+    #http://www.fsijournal.org/article/S0379-0738(00)00298-X/abstract
 
 #Mayer Docs
 #http://www.jstor.org/stable/1736097?seq=1#page_scan_tab_contents
@@ -52,6 +54,7 @@ So basically, I need to implement a few things:
     ----------------------
     Sex: Female
     Weight: 156lb / 70.76kg
+    Height: 5' 11"
     Body fat percentage: 28%
     Weight from fat: 43.68lb / 19.813kg / 19,813g
     Essential fat: 4%
@@ -98,7 +101,7 @@ So basically, I need to implement a few things:
     Insulin concentration: μU/mL
     Glucagon concentration: pU/mL
 
-    Fasting BIC: 15 - 40μU/mL
+    Fasting BIC: 15 - 40μU/mL = 8 - 15μU/mL
     Fasting BGC: 90 - 140pg/mL / 150pg/mL
 
     Mealtime BIC: ~80μU/mL?
@@ -134,7 +137,7 @@ glucagon_blood = 20.00
 #Glucagon present in the blood in in pg/mL
 
 global carb_insulin_ratio
-carb_insulin_ratio = 6000
+carb_insulin_ratio = 15000
 #Amount of mg of carbohydrate that one unit of insulin will metabolize/cover
 
 global glycogenolysis_ratio
@@ -215,7 +218,7 @@ def calculateSimNumbers():
     if glycogen_liver < 100000:
         #Absorb glucose & convert to glycogen
         glycogen_liver += ((insulin_blood/1000000)*carb_insulin_ratio*glycogenesis_ratio)
-        glucose_blood -= ((insulin_blood/1000000)*carb_insulin_ratio)
+        glucose_blood -= ((insulin_blood/1000000*blood_volume/10)*carb_insulin_ratio)
     
     glucose_blood -= metabolic_rate*10
     glucose_blood_level = (glucose_blood/blood_volume)
@@ -299,7 +302,7 @@ def updateDisplay():
     print ("Glycogen: " + str(round((glycogen_liver/1000), 2)) + "g hepatic, " + str(round(glycogen_muscles, 2)/1000) + "g muscular")
     print ("Blood insulin: " + str(round(insulin_blood, 2)) + "uU/mL")
     print ("Blood glucagon: " + str(round(glucagon_blood, 2)) + "pg/mL")
-    print ("Fat: " + str(round(fat_total)) + "g total, " + str(round(fat_nonessential)) + "g nonessential, " + str(round(fat_essential)) + "g essential")
+    #print ("Fat: " + str(round(fat_total)) + "g total, " + str(round(fat_nonessential)) + "g nonessential, " + str(round(fat_essential)) + "g essential")
     print ("Metabolic activity level: " + str(round(metabolic_rate, 4)))
     print ("")
 
