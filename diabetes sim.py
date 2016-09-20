@@ -3,6 +3,7 @@ import sys
 import platform
 import matplotlib.pyplot as plt
 import numpy as np
+from datetime import datetime
 
 #Diabetes/Body Energy Simulation Project
 #
@@ -168,7 +169,7 @@ fat_total = 19813.0
 #Total fat in adipose tissue in grams
 
 global metabolic_rate
-metabolic_rate = 0
+metabolic_rate = 3
 #Number used to represent metabolic activity of the body
 #NOT FACTUAL, FOR SIMULATION OF METABOLIC ACTIVITY
 #TO ENHANCE REALISM OF SIMULATION ONLY
@@ -177,12 +178,39 @@ global blood_volume
 blood_volume = 46.175
 #Volume of blood in dL
 
-global bgData
+global bgDataX
+bgDataX = []
+
+global bgDataY
+bgDataY = []
+
+global bgNormDataX
+bgNormDataX = []
+global bgNormDataY
+bgNormDataY = []
+global bgHighDataX
+bgHighDataX = []
+global bgHighDataY
+bgHighDataY = []
+global bgLowDataX
+bgLowDataX = []
+global bgLowDataY
+bgLowDataY = []
 global insulinData
 global glucagonData
+
+global currentTime
+currentTime = 0
+
+global timeData
 bgData = []
+bgNormData = {}
+bgLowData = {}
+bgHighData = {}
 insulinData = []
 glucagonData = []
+
+timeData = []
 #Lists for keeping past data on blood glucose level and insulin
 #and glucagon concentrations.
 
@@ -202,11 +230,29 @@ def calculateSimNumbers():
     global fat_nonessential
     global metabolic_rate
     global blood_volume
+
     global bgRateOfChange
-    global bgData
+    global ROC_arrows
+
+    global bgDataX
+    global bgDataY
+    global bgNormDataX
+    global bgNormDataY
+    global bgHighDataX
+    global bgHighDataY
+    global bgLowDataX
+    global bgLowDataY
     global insulinData
     global glucagonData
-    global ROC_arrows
+
+    global currentTime
+    
+    currentTime+=1
+    #currentTime = str(datetime.now())
+    #currentTime = currentTime.replace("-", "")
+    #currentTime = currentTime.replace(":", "")
+    #currentTime = currentTime.replace(".", "")
+    #currentTime = currentTime.replace(" ", "")
 
     #glucose_blood_level = (glucose_blood_level - insulin_blood + (glucagon_blood*12.5) - (metabolic_rate))
     #- (carb_insulin_ratio*insulin_blood) + (glycogenolysis_ratio*glucagon_blood*glycogen_to_glucose_ratio))
@@ -231,6 +277,27 @@ def calculateSimNumbers():
     bgData.append(glucose_blood_level)
     insulinData.append(insulin_blood)
     glucagonData.append(glucagon_blood)
+
+    bgDataX.append(currentTime)
+    bgDataY.append(glucose_blood_level)
+
+    if glucose_blood_level >= 80 and glucose_blood_level <= 180:
+        #bgNormDataDict[currentTime] = glucose_blood_level
+        bgNormDataX.append(currentTime)
+        bgNormDataY.append(glucose_blood_level)
+
+    if glucose_blood_level > 180:
+         #bgHighDataDict[currentTime] = glucose_blood_level
+         bgHighDataX.append(currentTime)
+         bgHighDataY.append(glucose_blood_level)
+    if glucose_blood_level < 80:
+        #bgLowDataDict[currentTime] = glucose_blood_level
+        bgLowDataX.append(currentTime)
+        bgLowDataY.append(glucose_blood_level)
+
+
+
+
 
     if len(bgData) >=3:
         bgRateOfChange = ((bgData[-1] - bgData[-2]) + (bgData[-2] - bgData[-3]))/2
@@ -282,10 +349,20 @@ def updateDisplay():
     global fat_nonessential
     global metabolic_rate
     global blood_volume
+
     global bgRateOfChange
-    global bgData
+
+    global bgDataX
+    global bgDataY
+    global bgNormDataX
+    global bgNormDataY
+    global bgHighDataX
+    global bgHighDataY
+    global bgLowDataX
+    global bgLowDataY
     global insulinData
     global glucagonData
+
     global ROC_arrows
 
     if platform.system() == "Windows":
@@ -305,6 +382,18 @@ def updateDisplay():
     #print ("Fat: " + str(round(fat_total)) + "g total, " + str(round(fat_nonessential)) + "g nonessential, " + str(round(fat_essential)) + "g essential")
     print ("Metabolic activity level: " + str(round(metabolic_rate, 4)))
     print ("")
+
+    plt.plot(bgDataX, bgDataY, 'k-')
+    #plt.plot(str((bgNormData.keys())).replace("dict_keys", ""), 'ko')
+    plt.plot(bgNormDataX, bgNormDataY, 'ko')
+    plt.plot(bgLowDataX, bgLowDataY, 'ro')
+    plt.plot(bgHighDataX, bgHighDataY, 'yo')
+    axes = plt.gca()
+    axes.set_ylim([0, 300])
+    plt.title('Blood Glucose')
+    plt.xlabel('Time')
+    plt.ylabel('Blood Glucose (mg/dL)')
+    plt.show()
 
     command()
 
