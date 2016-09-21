@@ -4,12 +4,9 @@ import platform
 import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
+from matplotlib.pyplot import *
 
 #Diabetes/Body Energy Simulation Project
-#
-#Most of this is going to be either psuedocode, or just information.
-#I'll start actual programming and organizing more things into variables
-#when I get what I need figured out.
 
 #My docs
 #http://diatribe.org/issues/55/thinking-like-a-pancreas
@@ -19,7 +16,11 @@ from datetime import datetime
 #https://www.diabeteshealth.com/insulin-to-carbohydrate-ratios/
 #http://www.austincc.edu/apreview/EmphasisItems/Glucose_regulation.html
 #file:///C:/Users/chrom/Downloads/FSI_insulin.pdfNN
-    #http://www.fsijournal.org/article/S0379-0738(00)00298-X/abstract
+#http://www.fsijournal.org/article/S0379-0738(00)00298-X/abstract
+#
+#https://www.drugs.com/pro/glucagon.html
+#https://www.drugs.com/pro/novolog-injection.html
+
 
 #Mayer Docs
 #http://www.jstor.org/stable/1736097?seq=1#page_scan_tab_contents
@@ -61,7 +62,7 @@ So basically, I need to implement a few things:
     Essential fat: 4%
     Weight from essential fat: 6.24lb / 2.830kg / 2,830g
     Nonesssential fat: 16,983g
-    Blood volume = 46.175dL
+    Blood volume = 46.175dL or 4,617.5mL
 '''
 
 ''' SCIENTIFIC BASIS OF VARIABLE VALUES
@@ -214,6 +215,8 @@ timeData = []
 #Lists for keeping past data on blood glucose level and insulin
 #and glucagon concentrations.
 
+plt.style.use('ggplot')
+
 def calculateSimNumbers():
     global glucose_blood_level
     global glucose_blood
@@ -262,7 +265,7 @@ def calculateSimNumbers():
         glucose_blood += (glucagon_blood*glycogenolysis_ratio*glycogen_to_glucose_ratio)
 
     if glycogen_liver < 100000:
-        #Absorb glucose & convert to glycogen
+         #Absorb glucose & convert to glycogen
         glycogen_liver += ((insulin_blood/1000000)*carb_insulin_ratio*glycogenesis_ratio)
         glucose_blood -= ((insulin_blood/1000000*blood_volume/10)*carb_insulin_ratio)
     
@@ -294,9 +297,6 @@ def calculateSimNumbers():
         #bgLowDataDict[currentTime] = glucose_blood_level
         bgLowDataX.append(currentTime)
         bgLowDataY.append(glucose_blood_level)
-
-
-
 
 
     if len(bgData) >=3:
