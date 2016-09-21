@@ -179,9 +179,14 @@ global blood_volume
 blood_volume = 46.175
 #Volume of blood in dL
 
+
+#Lists for keeping past data on blood glucose level and insulin
+#and glucagon concentrations.
+global bgData
+bgData = []
+
 global bgDataX
 bgDataX = []
-
 global bgDataY
 bgDataY = []
 
@@ -197,23 +202,21 @@ global bgLowDataX
 bgLowDataX = []
 global bgLowDataY
 bgLowDataY = []
-global insulinData
-global glucagonData
+global insulinDataX
+insulinDataX = []
+global insulinDataY
+insulinDataY = []
+global glucagonDataX
+glucagonDataX = []
+global glucagonDataY
+glucagonDataY = []
 
 global currentTime
 currentTime = 0
 
 global timeData
-bgData = []
-bgNormData = {}
-bgLowData = {}
-bgHighData = {}
-insulinData = []
-glucagonData = []
 
 timeData = []
-#Lists for keeping past data on blood glucose level and insulin
-#and glucagon concentrations.
 
 plt.style.use('ggplot')
 
@@ -237,6 +240,7 @@ def calculateSimNumbers():
     global bgRateOfChange
     global ROC_arrows
 
+    global bgData
     global bgDataX
     global bgDataY
     global bgNormDataX
@@ -245,8 +249,10 @@ def calculateSimNumbers():
     global bgHighDataY
     global bgLowDataX
     global bgLowDataY
-    global insulinData
-    global glucagonData
+    global insulinDataX
+    global insulinDataY
+    global glucagonDataX
+    global glucagonDataY
 
     global currentTime
     
@@ -278,8 +284,6 @@ def calculateSimNumbers():
         glucose_blood_level = 0.0
 
     bgData.append(glucose_blood_level)
-    insulinData.append(insulin_blood)
-    glucagonData.append(glucagon_blood)
 
     bgDataX.append(currentTime)
     bgDataY.append(glucose_blood_level)
@@ -331,6 +335,12 @@ def calculateSimNumbers():
         bgRateOfChange = 'N/A'
         ROC_arrows = ""
     
+    glucagonDataX = currentTime
+    glucagonDataY = glucagon_blood
+
+    insulinDataX = currentTime
+    insulinDataY= insulin_blood
+
     updateDisplay()
 
 def updateDisplay():
@@ -360,8 +370,10 @@ def updateDisplay():
     global bgHighDataY
     global bgLowDataX
     global bgLowDataY
-    global insulinData
-    global glucagonData
+    global insulinDataX
+    global insulinDataY
+    global glucagonDataX
+    global glucagonDataY
 
     global ROC_arrows
 
@@ -382,6 +394,8 @@ def updateDisplay():
     #print ("Fat: " + str(round(fat_total)) + "g total, " + str(round(fat_nonessential)) + "g nonessential, " + str(round(fat_essential)) + "g essential")
     print ("Metabolic activity level: " + str(round(metabolic_rate, 4)))
     print ("")
+    
+    plt.figure(1)
 
     plt.plot(bgDataX, bgDataY, 'k-')
     #plt.plot(str((bgNormData.keys())).replace("dict_keys", ""), 'ko')
@@ -389,10 +403,30 @@ def updateDisplay():
     plt.plot(bgLowDataX, bgLowDataY, 'ro')
     plt.plot(bgHighDataX, bgHighDataY, 'yo')
     axes = plt.gca()
-    axes.set_ylim([0, 300])
+    axes.set_ylim([0, 400])
     plt.title('Blood Glucose')
     plt.xlabel('Time')
     plt.ylabel('Blood Glucose (mg/dL)')
+
+    plt.figure(2)
+    plt.subplot(211)
+    plt.plot(insulinDataX, insulinDataY, 'ko')
+    plt.plot(insulinDataX, insulinDataY, 'g-')
+    axes = plt.gca()
+    axes.set_ylim(0, 30000)
+    plt.title('Blood Insulin')
+    plt.xlabel('Time')
+    plt.ylabel('Blood Insulin Concentration (μU/mL)')
+
+    plt.subplot(212)
+    plt.plot(glucagonDataX, glucagonDataY, 'ko')
+    plt.plot(glucagonDataX, glucagonDataY, 'b-')
+    axes = plt.gca()
+    axes.set_ylim(0, 800)
+    plt.title('Blood Glucagon Concentration')
+    plt.xlabel('Time')
+    plt.ylabel('Blood Glucagon Concentration (pU/dL)')
+    
     plt.show()
 
     command()
