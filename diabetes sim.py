@@ -218,7 +218,43 @@ global timeData
 
 timeData = []
 
+#Initialize graph
 plt.style.use('ggplot')
+fig = plt.figure()
+fig, (bgPlot, (insulinPlot, glucagonPlot)) = plt.subplots(nrows=2, ncols=2)
+#fig.tight_layout()
+
+bgPlot = fig.add_subplot(212)
+bgPlot.plot(bgDataX, bgDataY, 'k-')
+#plt.plot(str((bgNormData.keys())).replace("dict_keys", ""), 'ko')
+bgPlot.plot(bgNormDataX, bgNormDataY, 'ko')
+bgPlot.plot(bgLowDataX, bgLowDataY, 'ro')
+bgPlot.plot(bgHighDataX, bgHighDataY, 'yo')
+axes = plt.gca()
+axes.set_ylim([0, 400])
+plt.title('Blood Glucose')
+plt.xlabel('Time')
+plt.ylabel('Blood Glucose (mg/dL)')
+
+insulinPlot = fig.add_subplot(222)
+insulinPlot.plot(insulinDataX, insulinDataY, 'ko')
+insulinPlot.plot(insulinDataX, insulinDataY, 'g-')
+axes = plt.gca()
+axes.set_ylim(0, 30000)
+plt.title('Blood Insulin')
+plt.xlabel('Time')
+plt.ylabel('Blood Insulin Concentration (U/mL)')
+  
+glucagonPlot = fig.add_subplot(221)
+glucagonPlot.plot(glucagonDataX, glucagonDataY, 'ko')
+glucagonPlot.plot(glucagonDataX, glucagonDataY, 'b-')
+axes = plt.gca()
+axes.set_ylim(0, 800)
+plt.title('Blood Glucagon')
+plt.xlabel('Time')
+plt.ylabel('Blood Glucagon Concentration (pU/dL)')
+    
+fig.show()
 
 def calculateSimNumbers():
     global glucose_blood_level
@@ -335,11 +371,11 @@ def calculateSimNumbers():
         bgRateOfChange = 'N/A'
         ROC_arrows = ""
     
-    glucagonDataX = currentTime
-    glucagonDataY = glucagon_blood
+    glucagonDataX.append(currentTime)
+    glucagonDataY.append(glucagon_blood)
 
-    insulinDataX = currentTime
-    insulinDataY= insulin_blood
+    insulinDataX.append(currentTime)
+    insulinDataY.append(insulin_blood)
 
     updateDisplay()
 
@@ -395,39 +431,10 @@ def updateDisplay():
     print ("Metabolic activity level: " + str(round(metabolic_rate, 4)))
     print ("")
     
-    plt.figure(1)
-
-    plt.plot(bgDataX, bgDataY, 'k-')
-    #plt.plot(str((bgNormData.keys())).replace("dict_keys", ""), 'ko')
-    plt.plot(bgNormDataX, bgNormDataY, 'ko')
-    plt.plot(bgLowDataX, bgLowDataY, 'ro')
-    plt.plot(bgHighDataX, bgHighDataY, 'yo')
-    axes = plt.gca()
-    axes.set_ylim([0, 400])
-    plt.title('Blood Glucose')
-    plt.xlabel('Time')
-    plt.ylabel('Blood Glucose (mg/dL)')
-
-    plt.figure(2)
-    plt.subplot(211)
-    plt.plot(insulinDataX, insulinDataY, 'ko')
-    plt.plot(insulinDataX, insulinDataY, 'g-')
-    axes = plt.gca()
-    axes.set_ylim(0, 30000)
-    plt.title('Blood Insulin')
-    plt.xlabel('Time')
-    plt.ylabel('Blood Insulin Concentration (μU/mL)')
-
-    plt.subplot(212)
-    plt.plot(glucagonDataX, glucagonDataY, 'ko')
-    plt.plot(glucagonDataX, glucagonDataY, 'b-')
-    axes = plt.gca()
-    axes.set_ylim(0, 800)
-    plt.title('Blood Glucagon Concentration')
-    plt.xlabel('Time')
-    plt.ylabel('Blood Glucagon Concentration (pU/dL)')
-    
-    plt.show()
+    #fig.clear()
+    #fig.update()
+    #plt.close("all")
+    fig.show()
 
     command()
 
