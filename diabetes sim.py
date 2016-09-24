@@ -7,6 +7,7 @@ from bokeh.charts import Line, output_file, show
 
 #Diabetes/Body Energy Simulation Project
 
+''' DOCUMENTS AND SCIENTIFIC INFORMATION SOURCES
 #My docs
 #http://diatribe.org/issues/55/thinking-like-a-pancreas
 #http://www.ncbi.nlm.nih.gov/pubmed/16441980
@@ -26,7 +27,7 @@ from bokeh.charts import Line, output_file, show
 #http://www.ncbi.nlm.nih.gov/books/NBK21190/
 #http://diabetes.diabetesjournals.org/content/diabetes/49/12/2094.full.pdf
 #http://www.jci.org/articles/view/106445
-
+'''
 
 ''' IMPLEMENTATION & PROGRAM INFO
 So basically, I need to implement a few things:
@@ -381,9 +382,7 @@ def updateDisplay():
     print ("Metabolic activity level: " + str(round(metabolic_rate, 4)))
     print ("")
 
-    # (dict, OrderedDict, lists, arrays and DataFrames are valid inputs)
-
-    line = Line(bgDataY, title="line", legend="top_left", ylabel='Languages')
+    line = Line(bgData, title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
 
     output_file('line.html')
     show(line)
