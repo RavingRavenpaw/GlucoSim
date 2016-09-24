@@ -437,9 +437,8 @@ def updateDisplay():
     '''
 
     #New Bokeh stuff
-    #(dict, OrderedDict, lists, arrays and DataFrames are valid inputs)
-
-    line = Line(bgData, title="Bloog Glucose", legend="top_left", ylabel='Blood Glucose (mg/dL)')
+    # (dict, OrderedDict, lists, arrays and DataFrames are valid inputs)
+    line = Line(bgDataX, bgDataY, title="line", legend="top_left", ylabel='Languages')
 
     output_file('line.html')
     show(line)
