@@ -1,10 +1,9 @@
 import os
 import sys
 import platform
-import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
-from matplotlib.pyplot import *
+from bokeh.charts import Line, output_file, show
 
 #Diabetes/Body Energy Simulation Project
 
@@ -215,7 +214,6 @@ timeData = []
 #Lists for keeping past data on blood glucose level and insulin
 #and glucagon concentrations.
 
-plt.style.use('ggplot')
 
 def calculateSimNumbers():
     global glucose_blood_level
@@ -383,17 +381,12 @@ def updateDisplay():
     print ("Metabolic activity level: " + str(round(metabolic_rate, 4)))
     print ("")
 
-    plt.plot(bgDataX, bgDataY, 'k-')
-    #plt.plot(str((bgNormData.keys())).replace("dict_keys", ""), 'ko')
-    plt.plot(bgNormDataX, bgNormDataY, 'ko')
-    plt.plot(bgLowDataX, bgLowDataY, 'ro')
-    plt.plot(bgHighDataX, bgHighDataY, 'yo')
-    axes = plt.gca()
-    axes.set_ylim([0, 300])
-    plt.title('Blood Glucose')
-    plt.xlabel('Time')
-    plt.ylabel('Blood Glucose (mg/dL)')
-    plt.show()
+    # (dict, OrderedDict, lists, arrays and DataFrames are valid inputs)
+
+    line = Line(bgDataY, title="line", legend="top_left", ylabel='Languages')
+
+    output_file('line.html')
+    show(line)
 
     command()
 
