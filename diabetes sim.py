@@ -1,33 +1,33 @@
 import os
 import sys
 import platform
+import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
-from bokeh.charts import Line, output_file, show
+from matplotlib.pyplot import *
 
 #Diabetes/Body Energy Simulation Project
 
-''' DOCS AND SCIENTIFIC DATA LINKS
-My docs
-http://diatribe.org/issues/55/thinking-like-a-pancreas
-http://www.ncbi.nlm.nih.gov/pubmed/16441980
-http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3714432/
-http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3248697/
-https://www.diabeteshealth.com/insulin-to-carbohydrate-ratios/
-http://www.austincc.edu/apreview/EmphasisItems/Glucose_regulation.html
-file:///C:/Users/chrom/Downloads/FSI_insulin.pdfNN
-http://www.fsijournal.org/article/S0379-0738(00)00298-X/abstract
+#My docs
+#http://diatribe.org/issues/55/thinking-like-a-pancreas
+#http://www.ncbi.nlm.nih.gov/pubmed/16441980
+#http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3714432/
+#http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3248697/
+#https://www.diabeteshealth.com/insulin-to-carbohydrate-ratios/
+#http://www.austincc.edu/apreview/EmphasisItems/Glucose_regulation.html
+#file:///C:/Users/chrom/Downloads/FSI_insulin.pdfNN
+#http://www.fsijournal.org/article/S0379-0738(00)00298-X/abstract
+#
+#https://www.drugs.com/pro/glucagon.html
+#https://www.drugs.com/pro/novolog-injection.html
 
-https://www.drugs.com/pro/glucagon.html
-https://www.drugs.com/pro/novolog-injection.html
 
+#Mayer Docs
+#http://www.jstor.org/stable/1736097?seq=1#page_scan_tab_contents
+#http://www.ncbi.nlm.nih.gov/books/NBK21190/
+#http://diabetes.diabetesjournals.org/content/diabetes/49/12/2094.full.pdf
+#http://www.jci.org/articles/view/106445
 
-Mayer Docs
-http://www.jstor.org/stable/1736097?seq=1#page_scan_tab_contents
-http://www.ncbi.nlm.nih.gov/books/NBK21190/
-http://diabetes.diabetesjournals.org/content/diabetes/49/12/2094.full.pdf
-http://www.jci.org/articles/view/106445
-'''
 
 ''' IMPLEMENTATION & PROGRAM INFO
 So basically, I need to implement a few things:
@@ -218,8 +218,43 @@ global timeData
 
 timeData = []
 
-#plt.style.use('ggplot')
+#Initialize graph
+plt.style.use('ggplot')
+fig = plt.figure()
+fig, (bgPlot, (insulinPlot, glucagonPlot)) = plt.subplots(nrows=2, ncols=2)
+#fig.tight_layout()
+
+bgPlot = fig.add_subplot(212)
+bgPlot.plot(bgDataX, bgDataY, 'k-')
+#plt.plot(str((bgNormData.keys())).replace("dict_keys", ""), 'ko')
+bgPlot.plot(bgNormDataX, bgNormDataY, 'ko')
+bgPlot.plot(bgLowDataX, bgLowDataY, 'ro')
+bgPlot.plot(bgHighDataX, bgHighDataY, 'yo')
+axes = plt.gca()
+axes.set_ylim([0, 400])
+plt.title('Blood Glucose')
+plt.xlabel('Time')
+plt.ylabel('Blood Glucose (mg/dL)')
+
+insulinPlot = fig.add_subplot(222)
+insulinPlot.plot(insulinDataX, insulinDataY, 'ko')
+insulinPlot.plot(insulinDataX, insulinDataY, 'g-')
+axes = plt.gca()
+axes.set_ylim(0, 30000)
+plt.title('Blood Insulin')
+plt.xlabel('Time')
+plt.ylabel('Blood Insulin Concentration (U/mL)')
+  
+glucagonPlot = fig.add_subplot(221)
+glucagonPlot.plot(glucagonDataX, glucagonDataY, 'ko')
+glucagonPlot.plot(glucagonDataX, glucagonDataY, 'b-')
+axes = plt.gca()
+axes.set_ylim(0, 800)
+plt.title('Blood Glucagon')
+plt.xlabel('Time')
+plt.ylabel('Blood Glucagon Concentration (pU/dL)')
     
+fig.show()
 
 def calculateSimNumbers():
     global glucose_blood_level
@@ -396,44 +431,11 @@ def updateDisplay():
     print ("Metabolic activity level: " + str(round(metabolic_rate, 4)))
     print ("")
     
-    ''' OLD MATPLOTLIB STUFF
     #fig.clear()
     #fig.update()
     #plt.close("all")
-    fig = plt.figure()
-    fig, (bgPlot, (insulinPlot, glucagonPlot)) = plt.subplots(nrows=2, ncols=2)
-    #fig.tight_layout()
-
-    bgPlot = fig.add_subplot(212)
-    bgPlot.plot(bgDataX, bgDataY, 'k-')
-    bgPlot.plot(bgNormDataX, bgNormDataY, 'ko')
-    bgPlot.plot(bgLowDataX, bgLowDataY, 'ro')
-    bgPlot.plot(bgHighDataX, bgHighDataY, 'yo')
-    axes = plt.gca()
-    axes.set_ylim([0, 400])
-    plt.title('Blood Glucose')
-    plt.xlabel('Time')
-    plt.ylabel('Blood Glucose (mg/dL)')
-    
-
-    insulinPlot = fig.add_subplot(222)
-    insulinPlot.plot(insulinDataX, insulinDataY, 'ko')
-    insulinPlot.plot(insulinDataX, insulinDataY, 'g-')
-    axes = plt.gca()
-    axes.set_ylim(0, 30000)
-    plt.title('Blood Insulin')
-    plt.xlabel('Time')
-    plt.ylabel('Blood Insulin (uU/mL)')
-  
-    glucagonPlot = fig.add_subplot(221)
-    glucagonPlot.plot(glucagonDataX, glucagonDataY, 'ko')
-    glucagonPlot.plot(glucagonDataX, glucagonDataY, 'b-')
-    axes = plt.gca()
-    axes.set_ylim(0, 800)
-    plt.title('Blood Glucagon')
-    plt.xlabel('Time')
-    plt.ylabel('Blood Glucagon (pU/dL)')
     fig.show()
+<<<<<<< HEAD
     '''
 
     #New Bokeh stuff
@@ -442,6 +444,8 @@ def updateDisplay():
 
     output_file('line.html')
     show(line)
+=======
+>>>>>>> parent of 2a9a0d3... Switched graphing system to Bokeh
 
     command()
 
