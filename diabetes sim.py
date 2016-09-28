@@ -1,13 +1,13 @@
 import os
 import sys
 import platform
-import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
-from matplotlib.pyplot import *
+from bokeh.charts import Line, output_file, show
 
 #Diabetes/Body Energy Simulation Project
 
+''' DOCUMENTS AND SCIENTIFIC INFORMATION SOURCES
 #My docs
 #http://diatribe.org/issues/55/thinking-like-a-pancreas
 #http://www.ncbi.nlm.nih.gov/pubmed/16441980
@@ -27,7 +27,7 @@ from matplotlib.pyplot import *
 #http://www.ncbi.nlm.nih.gov/books/NBK21190/
 #http://diabetes.diabetesjournals.org/content/diabetes/49/12/2094.full.pdf
 #http://www.jci.org/articles/view/106445
-
+'''
 
 ''' IMPLEMENTATION & PROGRAM INFO
 So basically, I need to implement a few things:
@@ -215,7 +215,6 @@ timeData = []
 #Lists for keeping past data on blood glucose level and insulin
 #and glucagon concentrations.
 
-plt.style.use('ggplot')
 
 def calculateSimNumbers():
     global glucose_blood_level
@@ -383,17 +382,10 @@ def updateDisplay():
     print ("Metabolic activity level: " + str(round(metabolic_rate, 4)))
     print ("")
 
-    plt.plot(bgDataX, bgDataY, 'k-')
-    #plt.plot(str((bgNormData.keys())).replace("dict_keys", ""), 'ko')
-    plt.plot(bgNormDataX, bgNormDataY, 'ko')
-    plt.plot(bgLowDataX, bgLowDataY, 'ro')
-    plt.plot(bgHighDataX, bgHighDataY, 'yo')
-    axes = plt.gca()
-    axes.set_ylim([0, 300])
-    plt.title('Blood Glucose')
-    plt.xlabel('Time')
-    plt.ylabel('Blood Glucose (mg/dL)')
-    plt.show()
+    line = Line(bgData, title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
+
+    output_file('line.html')
+    show(line)
 
     command()
 
