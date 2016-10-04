@@ -381,11 +381,28 @@ def updateDisplay():
     #print ("Fat: " + str(round(fat_total)) + "g total, " + str(round(fat_nonessential)) + "g nonessential, " + str(round(fat_essential)) + "g essential")
     print ("Metabolic activity level: " + str(round(metabolic_rate, 4)))
     print ("")
+    if len(bgData) >= 100:
+        bgGraph = Line(bgData[0, 100], title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
+    else:
+        bgGrpah = Line(bgData, title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
+    '''
+    if len(insulinData) >= 100:
+        insulinGraph = Line(insulinData[0, 100], title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
+    
+    else:
+        insulinGraph = Line(insulinData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
+    
+    if len(insulinData) >= 100:
+        glucagonGraph = Line(glucagonData[0, 100], title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
+    
+    else:
+        glucagonGraph = Line(glucagonData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
+  
+        
+    '''
 
-    line = Line(bgData, title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
-
-    output_file('line.html')
-    show(line)
+    output_file('infoGraph.html')
+    show(infoGraph)
 
     command()
 
