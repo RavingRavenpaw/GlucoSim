@@ -2,7 +2,7 @@ import os
 import sys
 import platform
 #import numpy as np
-from datetime import datetime
+#from datetime import datetime
 #from bokeh.charts import Line, output_file, show
 from bokeh.io import output_file, show
 from bokeh.layouts import gridplot
@@ -398,16 +398,18 @@ def updateDisplay():
     print ("")
     if len(bgDataX) >= 100:
         #bgGraph = Line(bgData[0, 100], title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
-        bgGraph = figure()
-        bgGraph.line(bgDataX[0,100], bgDataY[0,100])
+        bgGraph = figure()#x_axis_type="datetime")
+        bgGraph.line(bgDataX[0,100], bgDataY[0,100], color = "black", )
+        bgGraph.circle(bgDataX[0,100], bgDataY[0,100], fill_color = "white", line_color = "black", size = 8)
         bgGraph.title.text = "Blood Glucose"
         bgGraph.xaxis.axis_label = "Time"
         bgGraph.yaxis.axis_label = "Blood Glucose (mg/dL)"
 
     else:
         #bgGrpah = Line(bgData, title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
-        bgGraph = figure()
-        bgGraph.line(bgDataX, bgDataY)
+        bgGraph = figure()#x_axis_type="datetime")
+        bgGraph.line(bgDataX, bgDataY, color = "black")
+        bgGraph.circle(bgDataX, bgDataY, fill_color = "white", line_color = "black", size = 8)
         bgGraph.title.text = "Blood Glucose"
         bgGraph.xaxis.axis_label = "Time"
         bgGraph.yaxis.axis_label = "Blood Glucose (mg/dL)"
@@ -415,30 +417,34 @@ def updateDisplay():
         
     if len(insulinDataX) >= 100:
         #insulinGraph = Line(insulinData[0, 100], title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
-        insulinGraph = figure()
-        insulinGraph.line(insulinDataX[0,100], insulinDataY[0,100])
+        insulinGraph = figure()#x_axis_type="datetime")
+        insulinGraph.line(insulinDataX[0,100], insulinDataY[0,100], color = "CadetBlue")
+        insulinGraph.circle(insulinDataX[0,100], insulinDataY[0,100], fill_color = "white", line_color = "CadetBlue", size = 8)
         insulinGraph.title.text = "Insulin"
         insuinGraph.xaxis.axis_label = "Time"
         insulinGraph.yaxis.axis_label = "Blood Insulin Concentration (uU/mL)"
     else:
         #insulinGraph = Line(insulinData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
-        insulinGraph = figure()
-        insulinGraph.line(insulinDataX, insulinDataY)
+        insulinGraph = figure()#x_axis_type="datetime")
+        insulinGraph.line(insulinDataX, insulinDataY, color = "CadetBlue")
+        insulinGraph.circle(insulinDataX, insulinDataY, fill_color = "white", line_color = "CadetBlue", size = 8)
         insulinGraph.title.text = "Insulin"
         insulinGraph.xaxis.axis_label = "Time"
         insulinGraph.yaxis.axis_label = "Blood Insulin Concentration (uU/mL)"
 
     if len(glucagonDataX) >= 100:
         #glucagonGraph = Line(glucagonData[0, 100], title = "Glucagon concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
-        glucagonGraph = figure()
-        glucagonGraph.line(glucagonDataX[0,100], glucagonDataY[0,100])
+        glucagonGraph = figure()#x_axis_type="datetime"
+        glucagonGraph.line(glucagonDataX[0,100], glucagonDataY[0,100], color = "GoldenRod")
+        glucagonGraph.circle(glucagonDataX[0,100], glucagonDataY[0,100], fill_color = "white", line_color = "GoldenRod", size = 8)
         glucagonGraph.title.text = "Glucagon"
         glucagonGraph.xaxis.axis_label = "Time"
         glucagonGraph.yaxis.axis_label = "Blood Glucagon Concentration (pg/mL)"
     else:
         #glucagonGraph = Line(glucagonData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
-        glucagonGraph = figure()
-        glucagonGraph.line(glucagonDataX, glucagonDataY)
+        glucagonGraph = figure()#x_axis_type="datetime")
+        glucagonGraph.line(glucagonDataX, glucagonDataY, color = "GoldenRod")
+        glucagonGraph.circle(glucagonDataX, glucagonDataY, fill_color = "white", line_color = "GoldenRod", size = 8)
         glucagonGraph.title.text = "Glucagon"
         glucagonGraph.xaxis.axis_label = "Time"
         glucagonGraph.yaxis.axis_label = "Blood Glucagon Concentration (pg/mL)"
