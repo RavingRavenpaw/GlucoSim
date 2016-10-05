@@ -1,9 +1,12 @@
 import os
 import sys
 import platform
-import numpy as np
+#import numpy as np
 from datetime import datetime
-from bokeh.charts import Line, output_file, show
+#from bokeh.charts import Line, output_file, show
+from bokeh.io import output_file, show
+from bokeh.layouts import gridplot
+from bokeh.plotting import figure
 
 #Diabetes/Body Energy Simulation Project
 
@@ -197,8 +200,10 @@ global bgLowDataX
 bgLowDataX = []
 global bgLowDataY
 bgLowDataY = []
-global insulinData
+global insulinDataX
+global insulinDataY
 global glucagonData
+global glucagonDataY
 
 global currentTime
 currentTime = 0
@@ -208,8 +213,10 @@ bgData = []
 bgNormData = {}
 bgLowData = {}
 bgHighData = {}
-insulinData = []
-glucagonData = []
+insulinDataX = []
+insulinDataY = []
+glucagonDataX = []
+glucagonDataY = []
 
 timeData = []
 #Lists for keeping past data on blood glucose level and insulin
@@ -244,8 +251,10 @@ def calculateSimNumbers():
     global bgHighDataY
     global bgLowDataX
     global bgLowDataY
-    global insulinData
-    global glucagonData
+    global insulinDataX
+    global insulinDataY
+    global glucagonDataX
+    global glucagonDataY
 
     global currentTime
     
@@ -277,8 +286,12 @@ def calculateSimNumbers():
         glucose_blood_level = 0.0
 
     bgData.append(glucose_blood_level)
-    insulinData.append(insulin_blood)
-    glucagonData.append(glucagon_blood)
+
+    insulinDataX.append(currentTime)
+    insulinDataY.append(insulin_blood)
+
+    glucagonDataX.append(currentTime)
+    glucagonDataY.append(glucagon_blood)
 
     bgDataX.append(currentTime)
     bgDataY.append(glucose_blood_level)
@@ -359,8 +372,10 @@ def updateDisplay():
     global bgHighDataY
     global bgLowDataX
     global bgLowDataY
-    global insulinData
+    global insulinDataX
+    global insulinDataY
     global glucagonData
+    global glucagonDataY
 
     global ROC_arrows
 
@@ -381,28 +396,58 @@ def updateDisplay():
     #print ("Fat: " + str(round(fat_total)) + "g total, " + str(round(fat_nonessential)) + "g nonessential, " + str(round(fat_essential)) + "g essential")
     print ("Metabolic activity level: " + str(round(metabolic_rate, 4)))
     print ("")
-    if len(bgData) >= 100:
-        bgGraph = Line(bgData[0, 100], title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
+    if len(bgDataX) >= 100:
+        #bgGraph = Line(bgData[0, 100], title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
+        bgGraph = figure()
+        bgGraph.line(bgDataX[0,100], bgDataY[0,100])
+        bgGraph.title.text = "Blood Glucose"
+        bgGraph.xaxis.axis_label = "Time"
+        bgGraph.yaxis.axis_label = "Blood Glucose (mg/dL)"
+
     else:
-        bgGrpah = Line(bgData, title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
-    '''
-    if len(insulinData) >= 100:
-        insulinGraph = Line(insulinData[0, 100], title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
-    
-    else:
-        insulinGraph = Line(insulinData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
-    
-    if len(insulinData) >= 100:
-        glucagonGraph = Line(glucagonData[0, 100], title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
-    
-    else:
-        glucagonGraph = Line(glucagonData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
-  
+        #bgGrpah = Line(bgData, title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
+        bgGraph = figure()
+        bgGraph.line(bgDataX, bgDataY)
+        bgGraph.title.text = "Blood Glucose"
+        bgGraph.xaxis.axis_label = "Time"
+        bgGraph.yaxis.axis_label = "Blood Glucose (mg/dL)"
+
         
-    '''
+    if len(insulinDataX) >= 100:
+        #insulinGraph = Line(insulinData[0, 100], title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
+        insulinGraph = figure()
+        insulinGraph.line(insulinDataX[0,100], insulinDataY[0,100])
+        insulinGraph.title.text = "Insulin"
+        insuinGraph.xaxis.axis_label = "Time"
+        insulinGraph.yaxis.axis_label = "Blood Insulin Concentration (uU/mL)"
+    else:
+        #insulinGraph = Line(insulinData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
+        insulinGraph = figure()
+        insulinGraph.line(insulinDataX, insulinDataY)
+        insulinGraph.title.text = "Insulin"
+        insulinGraph.xaxis.axis_label = "Time"
+        insulinGraph.yaxis.axis_label = "Blood Insulin Concentration (uU/mL)"
+
+    if len(glucagonDataX) >= 100:
+        #glucagonGraph = Line(glucagonData[0, 100], title = "Glucagon concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
+        glucagonGraph = figure()
+        glucagonGraph.line(glucagonDataX[0,100], glucagonDataY[0,100])
+        glucagonGraph.title.text = "Glucagon"
+        glucagonGraph.xaxis.axis_label = "Time"
+        glucagonGraph.yaxis.axis_label = "Blood Glucagon Concentration (pg/mL)"
+    else:
+        #glucagonGraph = Line(glucagonData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
+        glucagonGraph = figure()
+        glucagonGraph.line(glucagonDataX, glucagonDataY)
+        glucagonGraph.title.text = "Glucagon"
+        glucagonGraph.xaxis.axis_label = "Time"
+        glucagonGraph.yaxis.axis_label = "Blood Glucagon Concentration (pg/mL)"
+        
+
+    grid = gridplot([bgGraph, insulinGraph, glucagonGraph], ncols=2, plot_width=250, plot_height=250)
 
     output_file('infoGraph.html')
-    show(infoGraph)
+    show(grid)
 
     command()
 
