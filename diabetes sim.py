@@ -296,19 +296,34 @@ def calculateSimNumbers():
     bgDataX.append(currentTime)
     bgDataY.append(glucose_blood_level)
 
+    #nan = float('nan')
+
     if glucose_blood_level >= 80 and glucose_blood_level <= 180:
         #bgNormDataDict[currentTime] = glucose_blood_level
         bgNormDataX.append(currentTime)
         bgNormDataY.append(glucose_blood_level)
+        #bgHighDataX.append(nan)
+        #bgHighDataX.append(nan)
+        #bgLowDataX.append(nan)
+        #bgLowDataY.append(nan)
 
     if glucose_blood_level > 180:
          #bgHighDataDict[currentTime] = glucose_blood_level
          bgHighDataX.append(currentTime)
          bgHighDataY.append(glucose_blood_level)
+         #bgNormDataX.append(nan)
+         #bgNormDataX.append(nan)
+         #bgLowDataX.append(nan)
+         #bgLowDataY.append(nan)
+
     if glucose_blood_level < 80:
         #bgLowDataDict[currentTime] = glucose_blood_level
         bgLowDataX.append(currentTime)
         bgLowDataY.append(glucose_blood_level)
+        #bgHighDataX.append(nan)
+        #bgHighDataX.append(nan)
+        #bgNormDataX.append(nan)
+        #bgNormDataY.append(nan)
 
 
     if len(bgData) >=3:
@@ -396,11 +411,15 @@ def updateDisplay():
     #print ("Fat: " + str(round(fat_total)) + "g total, " + str(round(fat_nonessential)) + "g nonessential, " + str(round(fat_essential)) + "g essential")
     print ("Metabolic activity level: " + str(round(metabolic_rate, 4)))
     print ("")
+
     if len(bgDataX) >= 100:
         #bgGraph = Line(bgData[0, 100], title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
         bgGraph = figure()#x_axis_type="datetime")
-        bgGraph.line(bgDataX[0,100], bgDataY[0,100], color = "black", )
+        bgGraph.line(bgDataX[0,100], bgDataY[0,100], color = "black")
         bgGraph.circle(bgDataX[0,100], bgDataY[0,100], fill_color = "white", line_color = "black", size = 8)
+        #bgGraph.circle(bgNormDataX[0,100], bgNormDataY[0,100], fill_color = "white", line_color = "black", size = 8)
+        #bgGraph.circle(bgHighDataX[0,100], bgNormDataY[0,100], fill_color = "white", line_color = "yellow", size = 8)
+        #bgGraph.circle(bgLowDataX[0,100], bgLowDataY[0,100], fill_color = "white", line_color = "red", size = 8)
         bgGraph.title.text = "Blood Glucose"
         bgGraph.xaxis.axis_label = "Time"
         bgGraph.yaxis.axis_label = "Blood Glucose (mg/dL)"
@@ -410,6 +429,9 @@ def updateDisplay():
         bgGraph = figure()#x_axis_type="datetime")
         bgGraph.line(bgDataX, bgDataY, color = "black")
         bgGraph.circle(bgDataX, bgDataY, fill_color = "white", line_color = "black", size = 8)
+        #bgGraph.circle(bgNormDataX, bgNormDataY, fill_color = "white", line_color = "black", size = 8)
+        #bgGraph.circle(bgHighDataX, bgNormDataY, fill_color = "white", line_color = "yellow", size = 8)
+        #bgGraph.circle(bgLowDataX, bgLowDataY, fill_color = "white", line_color = "red", size = 8)
         bgGraph.title.text = "Blood Glucose"
         bgGraph.xaxis.axis_label = "Time"
         bgGraph.yaxis.axis_label = "Blood Glucose (mg/dL)"
@@ -422,7 +444,7 @@ def updateDisplay():
         insulinGraph.circle(insulinDataX[0,100], insulinDataY[0,100], fill_color = "white", line_color = "CadetBlue", size = 8)
         insulinGraph.title.text = "Insulin"
         insuinGraph.xaxis.axis_label = "Time"
-        insulinGraph.yaxis.axis_label = "Blood Insulin Concentration (uU/mL)"
+        insulinGraph.yaxis.axis_label = "Blood Insulin (μU/mL)"
     else:
         #insulinGraph = Line(insulinData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
         insulinGraph = figure()#x_axis_type="datetime")
@@ -430,7 +452,7 @@ def updateDisplay():
         insulinGraph.circle(insulinDataX, insulinDataY, fill_color = "white", line_color = "CadetBlue", size = 8)
         insulinGraph.title.text = "Insulin"
         insulinGraph.xaxis.axis_label = "Time"
-        insulinGraph.yaxis.axis_label = "Blood Insulin Concentration (uU/mL)"
+        insulinGraph.yaxis.axis_label = "Blood Insulin (μU/mL)"
 
     if len(glucagonDataX) >= 100:
         #glucagonGraph = Line(glucagonData[0, 100], title = "Glucagon concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
@@ -439,7 +461,7 @@ def updateDisplay():
         glucagonGraph.circle(glucagonDataX[0,100], glucagonDataY[0,100], fill_color = "white", line_color = "GoldenRod", size = 8)
         glucagonGraph.title.text = "Glucagon"
         glucagonGraph.xaxis.axis_label = "Time"
-        glucagonGraph.yaxis.axis_label = "Blood Glucagon Concentration (pg/mL)"
+        glucagonGraph.yaxis.axis_label = "Blood Glucagon (pg/mL)"
     else:
         #glucagonGraph = Line(glucagonData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
         glucagonGraph = figure()#x_axis_type="datetime")
@@ -447,10 +469,9 @@ def updateDisplay():
         glucagonGraph.circle(glucagonDataX, glucagonDataY, fill_color = "white", line_color = "GoldenRod", size = 8)
         glucagonGraph.title.text = "Glucagon"
         glucagonGraph.xaxis.axis_label = "Time"
-        glucagonGraph.yaxis.axis_label = "Blood Glucagon Concentration (pg/mL)"
+        glucagonGraph.yaxis.axis_label = "Blood Glucagon (pg/mL)"
         
-
-    grid = gridplot([bgGraph, insulinGraph, glucagonGraph], ncols=2, plot_width=250, plot_height=250)
+    grid = gridplot([bgGraph, insulinGraph, glucagonGraph], ncols=2, plot_width=350, plot_height=350)
 
     output_file('infoGraph.html')
     show(grid)
