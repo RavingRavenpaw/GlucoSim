@@ -16,7 +16,6 @@ def sim():
     glucose_blood_level = 100.0
     #Glucose level/concentration of the blood in mg/dL
 
-
     glucose_blood = 4617.5
     #Glucose present in the blood in mg
 
@@ -116,7 +115,7 @@ def sim():
             glucose_blood += (glucagon_blood*glycogenolysis_ratio*glycogen_to_glucose_ratio)
 
         if glycogen_liver < 100000:
-                #Absorb glucose & convert to glycogen
+            #Absorb glucose & convert to glycogen
             glycogen_liver += ((insulin_blood/1000000)*carb_insulin_ratio*glycogenesis_ratio)
             glucose_blood -= ((insulin_blood/1000000*blood_volume/10)*carb_insulin_ratio)
     
@@ -151,13 +150,13 @@ def sim():
             #bgLowDataY.append(nan)
 
         if glucose_blood_level > 180:
-                #bgHighDataDict[currentTime] = glucose_blood_level
-                bgHighDataX.append(currentTime)
-                bgHighDataY.append(glucose_blood_level)
-                #bgNormDataX.append(nan)
-                #bgNormDataX.append(nan)
-                #bgLowDataX.append(nan)
-                #bgLowDataY.append(nan)
+            #bgHighDataDict[currentTime] = glucose_blood_level
+            bgHighDataX.append(currentTime)
+            bgHighDataY.append(glucose_blood_level)
+            #bgNormDataX.append(nan)
+            #bgNormDataX.append(nan)
+            #bgLowDataX.append(nan)
+            #bgLowDataY.append(nan)
 
         if glucose_blood_level < 80:
             #bgLowDataDict[currentTime] = glucose_blood_level
@@ -167,6 +166,13 @@ def sim():
             #bgHighDataX.append(nan)
             #bgNormDataX.append(nan)
             #bgNormDataY.append(nan)
+
+        #CODE FOR ROC PREDICTION
+        ROC_predictionX = []
+        ROC_predictionY = []
+        for (x in 6):
+            ROC_predictionX.append(currentTime + 1)
+            ROC_predictionY,append(glucose_blood_level + bgRateOfChange)
 
 
         if len(bgData) >=3:
