@@ -167,13 +167,6 @@ def sim():
             #bgNormDataX.append(nan)
             #bgNormDataY.append(nan)
 
-        #CODE FOR ROC PREDICTION
-        ROC_predictionX = []
-        ROC_predictionY = []
-        for (x in 6):
-            ROC_predictionX.append(currentTime + 1)
-            ROC_predictionY,append(glucose_blood_level + bgRateOfChange)
-
 
         if len(bgData) >=3:
             bgRateOfChange = ((bgData[-1] - bgData[-2]) + (bgData[-2] - bgData[-3]))/2
@@ -204,8 +197,17 @@ def sim():
                 #ROC_arrows = "⇊"
                 ROC_arrows = "v|v v|v RAPIDLY FALLING /!\\"
         else:
-            bgRateOfChange = 'N/A'
+            bgRateOfChange = 0
             ROC_arrows = ""
+
+        #CODE FOR ROC PREDICTION
+        ROC_predictionX = []
+        ROC_predictionY = []
+        x = 0
+        for x in range (0, 6):
+            x+=1
+            ROC_predictionX.append(currentTime + 1)
+            ROC_predictionY.append(glucose_blood_level + bgRateOfChange)
 
 
 
