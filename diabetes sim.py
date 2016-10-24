@@ -218,15 +218,6 @@ def sim():
         
         ROC_widget = Paragraph(text=ROC_arrows_WB, width=50, height=25)
 
-        #CODE FOR ROC PREDICTION
-        ROC_predictionX = []
-        ROC_predictionY = []
-        x = 0
-        for x in range (0, 6):
-            x+=1
-            ROC_predictionX.append(currentTime + 1)
-            ROC_predictionY.append(glucose_blood_level + bgRateOfChange)
-
 
 
         #UPDATE DISPLAY
@@ -255,14 +246,10 @@ def sim():
         if len(bgDataX) >= 100:
             #bgGraph = Line(bgData[0, 100], title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
             bgGraph = figure()#x_axis_type="datetime")
-<<<<<<< HEAD
-            bgGraph.line(bgDataX[0,100], bgDataY[0,100], color = "black")
-            bgGraph.circle(bgDataX[0,100], bgDataY[0,100], fill_color = "white", line_color = "black", size = 8)
-            bgGraph.circle(ROC_predictionX[0,6], ROC_predictionY[0,6], fill_color = "white", line_color = "gray", size = 8)
-=======
-            bgGraph.line(bgDataX[-100:], bgDataY[-100:], color = "black")
+            bgGraph.circle(ROC_predictionX, ROC_predictionY, fill_color = "white", line_color = "gray", size = 8)
+            bgGraph.line(ROC_predictionX, ROC_predictionY, color = "lightgray")
+            #bgGraph.line(bgDataX[-100:], bgDataY[-100:], color = "black")
             bgGraph.circle(bgDataX[-100:], bgDataY[-100:], fill_color = "white", line_color = "black", size = 8)
->>>>>>> origin/master
             #bgGraph.circle(bgNormDataX[0,100], bgNormDataY[0,100], fill_color = "white", line_color = "black", size = 8)
             #bgGraph.circle(bgHighDataX[0,100], bgNormDataY[0,100], fill_color = "white", line_color = "yellow", size = 8)
             #bgGraph.circle(bgLowDataX[0,100], bgLowDataY[0,100], fill_color = "white", line_color = "red", size = 8)
@@ -277,6 +264,7 @@ def sim():
             bgGraph.line(bgDataX, bgDataY, color = "black")
             bgGraph.circle(bgDataX, bgDataY, fill_color = "white", line_color = "black", size = 8)
             bgGraph.circle(ROC_predictionX, ROC_predictionY, fill_color = "white", line_color = "gray", size = 8)
+            #bgGraph.line(ROC_predictionX, ROC_predictionY, color = "lightgray")
             #bgGraph.circle(bgNormDataX, bgNormDataY, fill_color = "white", line_color = "black", size = 8)
             #bgGraph.circle(bgHighDataX, bgNormDataY, fill_color = "white", line_color = "yellow", size = 8)
             #bgGraph.circle(bgLowDataX, bgLowDataY, fill_color = "white", line_color = "red", size = 8)
@@ -383,9 +371,6 @@ def sim():
             else:
                 command()
 
-        if command == "show":
-            show(grid)
-
         if command == "help":
             print("SIMULATION CONTROL")
             print("-----------------------")
@@ -400,11 +385,7 @@ def sim():
             print("----------------------")
             print("help - show this menu")
             print("exit - exit the program")
-<<<<<<< HEAD
             print("show - display graphs")
-=======
-            print("show - display the graphs")
->>>>>>> origin/master
             print("")
             os.system('pause')
 
