@@ -5,8 +5,9 @@ import platform
 #from datetime import datetime
 #from bokeh.charts import Line, output_file, show
 from bokeh.io import output_file, show
-from bokeh.layouts import gridplot
+from bokeh.layouts import layout, widgetbox
 from bokeh.plotting import figure
+from bokeh.models.widgets import Paragraph
 
 #Diabetes/Body Energy Simulation Project
 
@@ -185,33 +186,46 @@ def sim():
                 iterations += 1
 
             if bgRateOfChange < 1 and bgRateOfChange > -1:
-                #ROC_arrows = "→"
+                ROC_arrows_WB = "→"
                 ROC_arrows = "-> steady"
 
             #Rising
             if bgRateOfChange >= 1 and bgRateOfChange < 2:
-                #ROC_arrows = "↗"
+                ROC_arrows_WB = "↗"
                 ROC_arrows = "/^ slowly rising"
             if bgRateOfChange >= 2 and bgRateOfChange > 3:
-                #ROC_arrows = "↑"
+                ROC_arrows_WB = "↑"
                 ROC_arrows = "^|^ rising"
             if bgRateOfChange >= 3:
-                #ROC_arrows = "⇈"
+                ROC_arrows_WB = "⇈"
                 ROC_arrows = "^|^ ^|^ rapidly rising"
 
             #Falling
             if bgRateOfChange <= -1 and bgRateOfChange > -2:
-                #ROC_arrows = "↘"
+                ROC_arrows_WB = "↘"
                 ROC_arrows = "\\v slowly falling"
             if bgRateOfChange <= -2 and bgRateOfChange > -3:
-                #ROC_arrows = "↓"
+                ROC_arrows_WB = "↓"
                 ROC_arrows = "v|v falling"
             if bgRateOfChange <= -3:
-                #ROC_arrows = "⇊"
+                ROC_arrows_WB = "⇊  RAPIDLY FALLING!"
                 ROC_arrows = "v|v v|v RAPIDLY FALLING /!\\"
         else:
-            bgRateOfChange = 'N/A'
-            ROC_arrows = ""
+            bgRateOfChange = 0
+            ROC_arrows_WB = "N/A"
+            ROC_arrows = "N/A"
+            
+        
+        ROC_widget = Paragraph(text=ROC_arrows_WB, width=50, height=25)
+
+        #CODE FOR ROC PREDICTION
+        ROC_predictionX = []
+        ROC_predictionY = []
+        x = 0
+        for x in range (0, 6):
+            x+=1
+            ROC_predictionX.append(currentTime + 1)
+            ROC_predictionY.append(glucose_blood_level + bgRateOfChange)
 
 
 
@@ -241,15 +255,21 @@ def sim():
         if len(bgDataX) >= 100:
             #bgGraph = Line(bgData[0, 100], title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
             bgGraph = figure()#x_axis_type="datetime")
+<<<<<<< HEAD
             bgGraph.line(bgDataX[0,100], bgDataY[0,100], color = "black")
             bgGraph.circle(bgDataX[0,100], bgDataY[0,100], fill_color = "white", line_color = "black", size = 8)
             bgGraph.circle(ROC_predictionX[0,6], ROC_predictionY[0,6], fill_color = "white", line_color = "gray", size = 8)
+=======
+            bgGraph.line(bgDataX[-100:], bgDataY[-100:], color = "black")
+            bgGraph.circle(bgDataX[-100:], bgDataY[-100:], fill_color = "white", line_color = "black", size = 8)
+>>>>>>> origin/master
             #bgGraph.circle(bgNormDataX[0,100], bgNormDataY[0,100], fill_color = "white", line_color = "black", size = 8)
             #bgGraph.circle(bgHighDataX[0,100], bgNormDataY[0,100], fill_color = "white", line_color = "yellow", size = 8)
             #bgGraph.circle(bgLowDataX[0,100], bgLowDataY[0,100], fill_color = "white", line_color = "red", size = 8)
             bgGraph.title.text = "Blood Glucose"
             bgGraph.xaxis.axis_label = "Time"
             bgGraph.yaxis.axis_label = "Blood Glucose (mg/dL)"
+            #bgGraph.yaxis.bounds = (0, 400)
 
         else:
             #bgGrpah = Line(bgData, title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
@@ -263,16 +283,19 @@ def sim():
             bgGraph.title.text = "Blood Glucose"
             bgGraph.xaxis.axis_label = "Time"
             bgGraph.yaxis.axis_label = "Blood Glucose (mg/dL)"
+            #bgGraph.yaxis.bounds = (0, 400)
 
         
         if len(insulinDataX) >= 100:
             #insulinGraph = Line(insulinData[0, 100], title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
             insulinGraph = figure()#x_axis_type="datetime")
-            insulinGraph.line(insulinDataX[0,100], insulinDataY[0,100], color = "CadetBlue")
-            insulinGraph.circle(insulinDataX[0,100], insulinDataY[0,100], fill_color = "white", line_color = "CadetBlue", size = 8)
+            insulinGraph.line(insulinDataX[-100:], insulinDataY[-100:], color = "CadetBlue")
+            insulinGraph.circle(insulinDataX[-100:], insulinDataY[-100:], fill_color = "white", line_color = "CadetBlue", size = 8)
             insulinGraph.title.text = "Insulin"
             insuinGraph.xaxis.axis_label = "Time"
             insulinGraph.yaxis.axis_label = "Blood Insulin (μU/mL)"
+            #insulinGraph.yaxis.bounds = (0, 400)
+
         else:
             #insulinGraph = Line(insulinData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
             insulinGraph = figure()#x_axis_type="datetime")
@@ -281,15 +304,18 @@ def sim():
             insulinGraph.title.text = "Insulin"
             insulinGraph.xaxis.axis_label = "Time"
             insulinGraph.yaxis.axis_label = "Blood Insulin (μU/mL)"
+            #insulinGraph.yaxis.bounds = (0, 400)
 
         if len(glucagonDataX) >= 100:
             #glucagonGraph = Line(glucagonData[0, 100], title = "Glucagon concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
             glucagonGraph = figure()#x_axis_type="datetime"
-            glucagonGraph.line(glucagonDataX[0,100], glucagonDataY[0,100], color = "GoldenRod")
-            glucagonGraph.circle(glucagonDataX[0,100], glucagonDataY[0,100], fill_color = "white", line_color = "GoldenRod", size = 8)
+            glucagonGraph.line(glucagonDataX[-100:], glucagonDataY[-100:], color = "GoldenRod")
+            glucagonGraph.circle(glucagonDataX[-100:], glucagonDataY[-100:], fill_color = "white", line_color = "GoldenRod", size = 8)
             glucagonGraph.title.text = "Glucagon"
             glucagonGraph.xaxis.axis_label = "Time"
             glucagonGraph.yaxis.axis_label = "Blood Glucagon (pg/mL)"
+            #glucagonGraph.yaxis.bounds = (0, 700)
+
         else:
             #glucagonGraph = Line(glucagonData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
             glucagonGraph = figure()#x_axis_type="datetime")
@@ -298,9 +324,16 @@ def sim():
             glucagonGraph.title.text = "Glucagon"
             glucagonGraph.xaxis.axis_label = "Time"
             glucagonGraph.yaxis.axis_label = "Blood Glucagon (pg/mL)"
+            #glucagonGraph.yaxis.bounds = (0, 700)
         
         #Combine the blood glucose, insulin, and glucagon graphs into a grid
-        grid = gridplot([bgGraph, insulinGraph, glucagonGraph], ncols=2, plot_width=350, plot_height=350)
+        #grid = gridplot([bgGraph, insulinGraph, glucagonGraph], ncols=2, plot_width=600, plot_height=350)
+
+        grid = layout([
+          [bgGraph],
+          [insulinGraph, glucagonGraph],
+          [widgetbox(ROC_widget)],
+        ], sizing_mode='stretch_both')
 
         #Write the graphs to an HTML file and display the grid containing them
         output_file('infoGraph.html')
@@ -350,6 +383,9 @@ def sim():
             else:
                 command()
 
+        if command == "show":
+            show(grid)
+
         if command == "help":
             print("SIMULATION CONTROL")
             print("-----------------------")
@@ -364,7 +400,11 @@ def sim():
             print("----------------------")
             print("help - show this menu")
             print("exit - exit the program")
+<<<<<<< HEAD
             print("show - display graphs")
+=======
+            print("show - display the graphs")
+>>>>>>> origin/master
             print("")
             os.system('pause')
 
