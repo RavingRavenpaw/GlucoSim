@@ -1,6 +1,6 @@
-import os
-import sys
-import platform
+from os import system as osSystem
+from sys import exit
+from platform import system as sysPlatform
 #import numpy as np
 #from datetime import datetime
 #from bokeh.charts import Line, output_file, show
@@ -229,11 +229,11 @@ def sim():
         #UPDATE DISPLAY
 
         #Clear the terminal window
-        if platform.system() == "Windows":
-            os.system('cls')
+        if sysPlatform() == "Windows":
+            osSystem('cls')
 
         else:
-            os.system("clear")
+            osSystem("clear")
     
         #Print basic textual UI to the terminal window
         print ("Diabetes/Body Energy Simulation Project")
@@ -389,7 +389,7 @@ def sim():
 
         if command == "exit":
             if input("Are you sure you want to exit? (y/n)") == "y":
-                sys.exit()
+                exit()
             else:
                 command()
 
