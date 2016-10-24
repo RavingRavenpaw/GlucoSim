@@ -96,6 +96,9 @@ def sim():
     ROC_predictionX = []
     ROC_predictionY = []
 
+    metabolic_rateX = []
+    metabolic_rateY = []
+
 
 
     #Loop the program forever.
@@ -141,6 +144,9 @@ def sim():
 
         bgDataX.append(currentTime)
         bgDataY.append(glucose_blood_level)
+
+        metabolic_rateX.append(currentTime)
+        metabolic_rateY.append(metabolic_rate)
 
         #nan = float('nan')
 
@@ -313,6 +319,22 @@ def sim():
             glucagonGraph.xaxis.axis_label = "Time"
             glucagonGraph.yaxis.axis_label = "Blood Glucagon (pg/mL)"
             #glucagonGraph.yaxis.bounds = (0, 700)
+
+        if len(metabolic_rateX) >= 100:
+               metabolicGraph = figure()
+               metabolicGraph.line(metabolic_rateX[-100:], metabolic_rateY[-100:], color = "black")
+               metabolicGraph.circle(metabolic_rateX[-100:], metabolic_rateY[-100:], fill_color = "white", line_color = "black", size = 8)
+               metabolicGraph.title.text = "Metabolic Rate"
+               metabolicGraph.xaxis.axis_label = "Time"
+               metabolicGraph.yaxis.axis_label = "Metabolic Rate (simulated number)"
+
+        else:
+               metabolicGraph = figure()
+               metabolicGraph.line(metabolic_rateX, metabolic_rateY, color = "black")
+               metabolicGraph.circle(metabolic_rateX, metabolic_rateY, fill_color = "white", line_color = "black", size = 8)
+               metabolicGraph.title.text = "Metabolic Rate"
+               metabolicGraph.xaxis.axis_label = "Time"
+               metabolicGraph.yaxis.axis_label = "Metabolic Rate (simulated number)"
         
         #Combine the blood glucose, insulin, and glucagon graphs into a grid
         #grid = gridplot([bgGraph, insulinGraph, glucagonGraph], ncols=2, plot_width=600, plot_height=350)
@@ -320,7 +342,7 @@ def sim():
         grid = layout([
           [bgGraph],
           [insulinGraph, glucagonGraph],
-          [widgetbox(ROC_widget)],
+          [metabolicGraph, widgetbox(ROC_widget)],
         ], sizing_mode='stretch_both')
 
         #Write the graphs to an HTML file and display the grid containing them
