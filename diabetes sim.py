@@ -92,6 +92,9 @@ def sim():
 
     currentTime = 0
 
+    ROC_predictionX = []
+    ROC_predictionY = []
+
 
 
     #Loop the program forever.
@@ -167,17 +170,20 @@ def sim():
             #bgNormDataX.append(nan)
             #bgNormDataY.append(nan)
 
-        #CODE FOR ROC PREDICTION
-        ROC_predictionX = []
-        ROC_predictionY = []
-        for (x in 6):
-            ROC_predictionX.append(currentTime + 1)
-            ROC_predictionY,append(glucose_blood_level + bgRateOfChange)
-
 
         if len(bgData) >=3:
             bgRateOfChange = ((bgData[-1] - bgData[-2]) + (bgData[-2] - bgData[-3]))/2
             #Steady
+
+            #ROC Prediction
+            ROC_predictionX = []
+            ROC_predictionY = []
+            iterations = 1
+            for x in range (0,6):
+                ROC_predictionX.append(currentTime + iterations)
+                ROC_predictionY.append(glucose_blood_level + (bgRateOfChange*iterations))
+                iterations += 1
+
             if bgRateOfChange < 1 and bgRateOfChange > -1:
                 #ROC_arrows = "→"
                 ROC_arrows = "-> steady"
@@ -237,6 +243,7 @@ def sim():
             bgGraph = figure()#x_axis_type="datetime")
             bgGraph.line(bgDataX[0,100], bgDataY[0,100], color = "black")
             bgGraph.circle(bgDataX[0,100], bgDataY[0,100], fill_color = "white", line_color = "black", size = 8)
+            bgGraph.circle(ROC_predictionX[0,6], ROC_predictionY[0,6], fill_color = "white", line_color = "gray", size = 8)
             #bgGraph.circle(bgNormDataX[0,100], bgNormDataY[0,100], fill_color = "white", line_color = "black", size = 8)
             #bgGraph.circle(bgHighDataX[0,100], bgNormDataY[0,100], fill_color = "white", line_color = "yellow", size = 8)
             #bgGraph.circle(bgLowDataX[0,100], bgLowDataY[0,100], fill_color = "white", line_color = "red", size = 8)
@@ -249,6 +256,7 @@ def sim():
             bgGraph = figure()#x_axis_type="datetime")
             bgGraph.line(bgDataX, bgDataY, color = "black")
             bgGraph.circle(bgDataX, bgDataY, fill_color = "white", line_color = "black", size = 8)
+            bgGraph.circle(ROC_predictionX, ROC_predictionY, fill_color = "white", line_color = "gray", size = 8)
             #bgGraph.circle(bgNormDataX, bgNormDataY, fill_color = "white", line_color = "black", size = 8)
             #bgGraph.circle(bgHighDataX, bgNormDataY, fill_color = "white", line_color = "yellow", size = 8)
             #bgGraph.circle(bgLowDataX, bgLowDataY, fill_color = "white", line_color = "red", size = 8)
@@ -296,7 +304,6 @@ def sim():
 
         #Write the graphs to an HTML file and display the grid containing them
         output_file('infoGraph.html')
-        show(grid)
 
 
 
@@ -334,6 +341,9 @@ def sim():
         if command == "set blood_volume":
             blood_volume = float(input("New blood volume: "))
 
+        if command == "show":
+            show(grid)
+
         if command == "exit":
             if input("Are you sure you want to exit? (y/n)") == "y":
                 sys.exit()
@@ -354,6 +364,7 @@ def sim():
             print("----------------------")
             print("help - show this menu")
             print("exit - exit the program")
+            print("show - display graphs")
             print("")
             os.system('pause')
 
