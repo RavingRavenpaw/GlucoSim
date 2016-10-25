@@ -99,6 +99,9 @@ def sim():
     metabolic_rateX = []
     metabolic_rateY = []
 
+    glycogenDataX = []
+    glycogenDataY = []
+
 
 
     #Loop the program forever.
@@ -147,6 +150,9 @@ def sim():
 
         metabolic_rateX.append(currentTime)
         metabolic_rateY.append(metabolic_rate)
+
+        glycogenDataX.append(currentTime)
+        glycogenDataY.append(glycogen_liver)
 
         #nan = float('nan')
 
@@ -321,28 +327,45 @@ def sim():
             #glucagonGraph.yaxis.bounds = (0, 700)
 
         if len(metabolic_rateX) >= 100:
-               metabolicGraph = figure()
-               metabolicGraph.line(metabolic_rateX[-100:], metabolic_rateY[-100:], color = "black")
-               metabolicGraph.circle(metabolic_rateX[-100:], metabolic_rateY[-100:], fill_color = "white", line_color = "black", size = 8)
-               metabolicGraph.title.text = "Metabolic Rate"
-               metabolicGraph.xaxis.axis_label = "Time"
-               metabolicGraph.yaxis.axis_label = "Metabolic Rate (simulated number)"
+            metabolicGraph = figure()
+            metabolicGraph.line(metabolic_rateX[-100:], metabolic_rateY[-100:], color = "black")
+            metabolicGraph.circle(metabolic_rateX[-100:], metabolic_rateY[-100:], fill_color = "white", line_color = "black", size = 8)
+            metabolicGraph.title.text = "Metabolic Rate"
+            metabolicGraph.xaxis.axis_label = "Time"
+            metabolicGraph.yaxis.axis_label = "Metabolic Rate (simulated number)"
 
         else:
-               metabolicGraph = figure()
-               metabolicGraph.line(metabolic_rateX, metabolic_rateY, color = "black")
-               metabolicGraph.circle(metabolic_rateX, metabolic_rateY, fill_color = "white", line_color = "black", size = 8)
-               metabolicGraph.title.text = "Metabolic Rate"
-               metabolicGraph.xaxis.axis_label = "Time"
-               metabolicGraph.yaxis.axis_label = "Metabolic Rate (simulated number)"
+            metabolicGraph = figure()
+            metabolicGraph.line(metabolic_rateX, metabolic_rateY, color = "black")
+            metabolicGraph.circle(metabolic_rateX, metabolic_rateY, fill_color = "white", line_color = "black", size = 8)
+            metabolicGraph.title.text = "Metabolic Rate"
+            metabolicGraph.xaxis.axis_label = "Time"
+            metabolicGraph.yaxis.axis_label = "Metabolic Rate (simulated number)"
         
+        if len(glycogenDataX) >= 100:
+            glycogenGraph = figure()
+            glycogenGraph.line(glycogenDataX[-100:], glycogenDataY[-100:], color = "black")
+            glycogenGraph.circle(glycogenDataX[-100:], glycogenDataY[-100:], fill_color = "white", line_color = "black", size = 8)
+            glycogenGraph.title.text = "Hepatic Glycogen"
+            glycogenGraph.xaxis.axis_label = "Time"
+            glycogenGraph.yaxis.axis_label = "Hepatic Glycogen (mg)"
+
+        else:
+            glycogenGraph = figure()
+            glycogenGraph.line(glycogenDataX, glycogenDataY, color = "black")
+            glycogenGraph.circle(glycogenDataX, glycogenDataY, fill_color = "white", line_color = "black", size = 8)
+            glycogenGraph.title.text = "Hepatic Glycogen"
+            glycogenGraph.xaxis.axis_label = "Time"
+            glycogenGraph.yaxis.axis_label = "Hepatic Glycogen (mg)"
+
         #Combine the blood glucose, insulin, and glucagon graphs into a grid
         #grid = gridplot([bgGraph, insulinGraph, glucagonGraph], ncols=2, plot_width=600, plot_height=350)
 
         grid = layout([
           [bgGraph],
           [insulinGraph, glucagonGraph],
-          [metabolicGraph, widgetbox(ROC_widget)],
+          [metabolicGraph, glycogenGraph],
+          [widgetbox(ROC_widget)],
         ], sizing_mode='stretch_both')
 
         #Write the graphs to an HTML file and display the grid containing them
@@ -354,8 +377,8 @@ def sim():
 
         command = str(input(">"))
 
-        if command == "set blood glucose ":
-            glucose_blood = float(input("New blood glucose: "))
+        if command == "set bg":
+            glucose_blood = float(input("New blood glucose: "))*blood_volume
 
         if command == "set insulin":
             insulin_blood = float(input("New insulin level: "))
@@ -409,7 +432,7 @@ def sim():
             print("exit - exit the program")
             print("show - display graphs")
             print("")
-            os.system('pause')
+            osSystem('pause')
 
 #Start the program!
 sim()
