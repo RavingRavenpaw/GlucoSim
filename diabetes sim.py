@@ -14,91 +14,102 @@ from bokeh.models.widgets import Paragraph
 def sim():
     #VARIABLE INITIALIZATION
 
-    glucose_blood_level = 100.0
+    #CLINICAL VARIABLES
+
     #Glucose level/concentration of the blood in mg/dL
-
-    glucose_blood = 4617.5
+    glucose_blood_level = 100.0
+    
     #Glucose present in the blood in mg
-
-
-    glycogen_liver = 100000
+    glucose_blood = 4617.5
+    
     #Glycogen stored in the liver in mg
-
-    glycogen_muscles = 500000
+    glycogen_liver = 100000
+    
     #Glycogen stored in the muscles in mg
+    glycogen_muscles = 500000
 
-    insulin_blood = 15.0
     #Insulin present in the blood in μU/mL
+    insulin_blood = 15.0
 
-    glucagon_blood = 20.00
     #Glucagon present in the blood in in pg/mL
+    glucagon_blood = 20.00
 
-    carb_insulin_ratio = 15000
     #Amount of mg of carbohydrate that one unit of insulin will metabolize/cover
+    carb_insulin_ratio = 15000
 
-    glycogenolysis_ratio = 1
     #Grams of glycogen that one unit/one pg of glucagon will release
     #NOT FACTUAL, FOR SIMULATION TESTING PURPOSES ONLY
+    glycogenolysis_ratio = 1
 
-    glycogenesis_ratio = 1
     #Grams of glycogen that one gram of glucose will synthesize
     #NOT FACTUAL, FOR SIMULATION TESTING PURPOSES ONLY
+    glycogenesis_ratio = 1
 
-    glycogen_to_glucose_ratio = 1
     #Grams of glucose released from one gram of glycogen
     #NOT FACTUAL, FOR SIMULATION TESTING PURPOSES ONLY
+    glycogen_to_glucose_ratio = 1
 
-    fat_nonessential = 16983.0
     #Nonessential (burnable) fat stored in adipose tissue in grams
+    fat_nonessential = 16983.0
 
-    fat_essential = 2830.0
     #Essential (non-burnable) fat stored in adipose tissue in grams
+    fat_essential = 2830.0
 
-    fat_total = 19813.0
     #Total fat in adipose tissue in grams
+    fat_total = 19813.0
 
-    metabolic_rate = 3
     #Number used to represent metabolic activity of the body
     #NOT FACTUAL, FOR SIMULATION OF METABOLIC ACTIVITY
     #TO ENHANCE REALISM OF SIMULATION ONLY
+    metabolic_rate = 3
 
-    blood_volume = 46.175
     #Volume of blood in dL
+    blood_volume = 46.175
 
+    #Insulin Sensitivity
+    insulin_sensitivity = 1
+
+    currentTime = 0
+
+
+
+
+
+    #DATA FOR GRAPHING
+
+    #Blood Glucose Level
     bgDataX = []
-
     bgDataY = []
 
+    #Blood Glucose Level within target range (crrently unused)
     bgNormDataX = []
     bgNormDataY = []
+
+    #Blood Glucose Level higher than tgarget range (currently unused)
     bgHighDataX = []
     bgHighDataY = []
+
+    #Blood GLucose Level lower than target range (currently unused)
     bgLowDataX = []
     bgLowDataY = []
 
-    currentTime = 0
-
-    bgData = []
-    bgNormData = {}
-    bgLowData = {}
-    bgHighData = {}
+    #Blood Insulin Concentration
     insulinDataX = []
     insulinDataY = []
+
+    #Blood Glucagon Concentration
     glucagonDataX = []
     glucagonDataY = []
 
-    timeData = []
-    #Lists for keeping past data on blood glucose level and insulin
-    #and glucagon concentrations.
-
-    currentTime = 0
-
+    #Rate of Change Prediction
     ROC_predictionX = []
     ROC_predictionY = []
 
+    #Metabolic Rate
     metabolic_rateX = []
     metabolic_rateY = []
 
+    #GLycogen in liver
     glycogenDataX = []
     glycogenDataY = []
 
@@ -137,7 +148,6 @@ def sim():
         if glucose_blood_level < 0.0:
             glucose_blood_level = 0.0
 
-        bgData.append(glucose_blood_level)
 
         insulinDataX.append(currentTime)
         insulinDataY.append(insulin_blood)
@@ -184,8 +194,8 @@ def sim():
             #bgNormDataY.append(nan)
 
 
-        if len(bgData) >=3:
-            bgRateOfChange = ((bgData[-1] - bgData[-2]) + (bgData[-2] - bgData[-3]))/2
+        if len(bgDataX) >=3:
+            bgRateOfChange = ((bgDataY[-1] - bgDataY[-2]) + (bgDataY[-2] - bgDataY[-3]))/2
             #Steady
 
             #ROC Prediction
@@ -241,6 +251,8 @@ def sim():
         else:
             osSystem("clear")
     
+
+
         #Print basic textual UI to the terminal window
         print ("Diabetes/Body Energy Simulation Project")
         print ("2015 - 2016, created by John Kozlosky")
@@ -254,14 +266,15 @@ def sim():
         print ("Metabolic activity level: " + str(round(metabolic_rate, 4)))
         print ("")
 
-        #Make graphs using bokeh
+
+
+        #Make graphs using 
+        #Blood glucose level
         if len(bgDataX) >= 100:
-            #bgGraph = Line(bgData[0, 100], title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
             bgGraph = figure()#x_axis_type="datetime")
-            bgGraph.circle(ROC_predictionX, ROC_predictionY, fill_color = "white", line_color = "gray", size = 8)
-            bgGraph.line(ROC_predictionX, ROC_predictionY, color = "lightgray")
-            #bgGraph.line(bgDataX[-100:], bgDataY[-100:], color = "black")
+            bgGraph.line(bgDataX[-100:], bgDataY[-100:], color = "black")
             bgGraph.circle(bgDataX[-100:], bgDataY[-100:], fill_color = "white", line_color = "black", size = 8)
+            bgGraph.circle(ROC_predictionX, ROC_predictionY, fill_color = "white", line_color = "gray", size = 8)
             #bgGraph.circle(bgNormDataX[0,100], bgNormDataY[0,100], fill_color = "white", line_color = "black", size = 8)
             #bgGraph.circle(bgHighDataX[0,100], bgNormDataY[0,100], fill_color = "white", line_color = "yellow", size = 8)
             #bgGraph.circle(bgLowDataX[0,100], bgLowDataY[0,100], fill_color = "white", line_color = "red", size = 8)
@@ -271,12 +284,10 @@ def sim():
             #bgGraph.yaxis.bounds = (0, 400)
 
         else:
-            #bgGrpah = Line(bgData, title="Blood Glucose", legend="top_left", xlabel = 'Time', ylabel='Blood Glucose (mg/dL)')
             bgGraph = figure()#x_axis_type="datetime")
             bgGraph.line(bgDataX, bgDataY, color = "black")
             bgGraph.circle(bgDataX, bgDataY, fill_color = "white", line_color = "black", size = 8)
             bgGraph.circle(ROC_predictionX, ROC_predictionY, fill_color = "white", line_color = "gray", size = 8)
-            #bgGraph.line(ROC_predictionX, ROC_predictionY, color = "lightgray")
             #bgGraph.circle(bgNormDataX, bgNormDataY, fill_color = "white", line_color = "black", size = 8)
             #bgGraph.circle(bgHighDataX, bgNormDataY, fill_color = "white", line_color = "yellow", size = 8)
             #bgGraph.circle(bgLowDataX, bgLowDataY, fill_color = "white", line_color = "red", size = 8)
@@ -285,9 +296,8 @@ def sim():
             bgGraph.yaxis.axis_label = "Blood Glucose (mg/dL)"
             #bgGraph.yaxis.bounds = (0, 400)
 
-        
+        #Insulin
         if len(insulinDataX) >= 100:
-            #insulinGraph = Line(insulinData[0, 100], title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
             insulinGraph = figure()#x_axis_type="datetime")
             insulinGraph.line(insulinDataX[-100:], insulinDataY[-100:], color = "CadetBlue")
             insulinGraph.circle(insulinDataX[-100:], insulinDataY[-100:], fill_color = "white", line_color = "CadetBlue", size = 8)
@@ -297,7 +307,6 @@ def sim():
             #insulinGraph.yaxis.bounds = (0, 400)
 
         else:
-            #insulinGraph = Line(insulinData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
             insulinGraph = figure()#x_axis_type="datetime")
             insulinGraph.line(insulinDataX, insulinDataY, color = "CadetBlue")
             insulinGraph.circle(insulinDataX, insulinDataY, fill_color = "white", line_color = "CadetBlue", size = 8)
@@ -306,8 +315,8 @@ def sim():
             insulinGraph.yaxis.axis_label = "Blood Insulin (μU/mL)"
             #insulinGraph.yaxis.bounds = (0, 400)
 
+        #Glucagon
         if len(glucagonDataX) >= 100:
-            #glucagonGraph = Line(glucagonData[0, 100], title = "Glucagon concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
             glucagonGraph = figure()#x_axis_type="datetime"
             glucagonGraph.line(glucagonDataX[-100:], glucagonDataY[-100:], color = "GoldenRod")
             glucagonGraph.circle(glucagonDataX[-100:], glucagonDataY[-100:], fill_color = "white", line_color = "GoldenRod", size = 8)
@@ -317,7 +326,6 @@ def sim():
             #glucagonGraph.yaxis.bounds = (0, 700)
 
         else:
-            #glucagonGraph = Line(glucagonData, title = "Insulin concentration", xlabel = "Time", ylabel = "Insulin Concentration (uU/mL)")
             glucagonGraph = figure()#x_axis_type="datetime")
             glucagonGraph.line(glucagonDataX, glucagonDataY, color = "GoldenRod")
             glucagonGraph.circle(glucagonDataX, glucagonDataY, fill_color = "white", line_color = "GoldenRod", size = 8)
@@ -326,6 +334,7 @@ def sim():
             glucagonGraph.yaxis.axis_label = "Blood Glucagon (pg/mL)"
             #glucagonGraph.yaxis.bounds = (0, 700)
 
+        #Metabolic rate
         if len(metabolic_rateX) >= 100:
             metabolicGraph = figure()
             metabolicGraph.line(metabolic_rateX[-100:], metabolic_rateY[-100:], color = "black")
@@ -342,6 +351,7 @@ def sim():
             metabolicGraph.xaxis.axis_label = "Time"
             metabolicGraph.yaxis.axis_label = "Metabolic Rate (simulated number)"
         
+        #Hepatic Glycogen
         if len(glycogenDataX) >= 100:
             glycogenGraph = figure()
             glycogenGraph.line(glycogenDataX[-100:], glycogenDataY[-100:], color = "black")
@@ -406,6 +416,11 @@ def sim():
 
         if command == "set blood_volume":
             blood_volume = float(input("New blood volume: "))
+
+        if command == "inject bolus":
+            bolus = float(input("Novolog bolus size (U): "))
+
+        #if command == "ingest carb"
 
         if command == "show":
             show(grid)
