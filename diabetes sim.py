@@ -1,13 +1,19 @@
+print("Loading...")
+print("0%..."),
 from os import system as osSystem
 from sys import exit
 from platform import system as sysPlatform
+print("5%..."),
 #import numpy as np
 #from datetime import datetime
 #from bokeh.charts import Line, output_file, show
 from bokeh.io import output_file, show
+print("90%"),
 from bokeh.layouts import layout, widgetbox
 from bokeh.plotting import figure
 from bokeh.models.widgets import Paragraph
+print("100%")
+
 
 #Diabetes/Body Energy Simulation Project
 
@@ -70,6 +76,7 @@ def sim():
     insulin_sensitivity = 1
 
     currentTime = 0
+
 
 
 
@@ -166,32 +173,21 @@ def sim():
 
         #nan = float('nan')
 
+
         if glucose_blood_level >= 80 and glucose_blood_level <= 180:
             #bgNormDataDict[currentTime] = glucose_blood_level
             bgNormDataX.append(currentTime)
             bgNormDataY.append(glucose_blood_level)
-            #bgHighDataX.append(nan)
-            #bgHighDataX.append(nan)
-            #bgLowDataX.append(nan)
-            #bgLowDataY.append(nan)
 
         if glucose_blood_level > 180:
             #bgHighDataDict[currentTime] = glucose_blood_level
             bgHighDataX.append(currentTime)
             bgHighDataY.append(glucose_blood_level)
-            #bgNormDataX.append(nan)
-            #bgNormDataX.append(nan)
-            #bgLowDataX.append(nan)
-            #bgLowDataY.append(nan)
 
         if glucose_blood_level < 80:
             #bgLowDataDict[currentTime] = glucose_blood_level
             bgLowDataX.append(currentTime)
             bgLowDataY.append(glucose_blood_level)
-            #bgHighDataX.append(nan)
-            #bgHighDataX.append(nan)
-            #bgNormDataX.append(nan)
-            #bgNormDataY.append(nan)
 
 
         if len(bgDataX) >=3:
@@ -268,7 +264,7 @@ def sim():
 
 
 
-        #Make graphs using 
+        #Make graphs using Bokeh
         #Blood glucose level
         if len(bgDataX) >= 100:
             bgGraph = figure()#x_axis_type="datetime")
@@ -378,7 +374,7 @@ def sim():
           [widgetbox(ROC_widget)],
         ], sizing_mode='stretch_both')
 
-        #Write the graphs to an HTML file and display the grid containing them
+        #Write the graphs to an HTML file
         output_file('infoGraph.html')
 
 
@@ -417,19 +413,19 @@ def sim():
         if command == "set blood_volume":
             blood_volume = float(input("New blood volume: "))
 
-        if command == "inject bolus":
-            bolus = float(input("Novolog bolus size (U): "))
+        #if command == "inject bolus":
+            #bolus = float(input("Novolog bolus size (U): "))
 
-        #if command == "ingest carb"
+        #if command == "ingest carb":
+            #carb = float(input("Ingest carbs (g): "))
 
         if command == "show":
             show(grid)
 
         if command == "exit":
-            if input("Are you sure you want to exit? (y/n)") == "y":
+            if input("Are you sure you want to exit? (y/n): ") == "y":
                 exit()
-            else:
-                command()
+
 
         if command == "help":
             print("SIMULATION CONTROL")
