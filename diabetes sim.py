@@ -1,18 +1,14 @@
 print("Loading...")
-print("0%..."),
 from os import system as osSystem
 from sys import exit
 from platform import system as sysPlatform
-print("5%..."),
 #import numpy as np
 #from datetime import datetime
 #from bokeh.charts import Line, output_file, show
 from bokeh.io import output_file, show
-print("90%"),
 from bokeh.layouts import layout, widgetbox
 from bokeh.plotting import figure
 from bokeh.models.widgets import Paragraph
-print("100%")
 
 
 #Diabetes/Body Energy Simulation Project
@@ -175,17 +171,14 @@ def sim():
 
 
         if glucose_blood_level >= 80 and glucose_blood_level <= 180:
-            #bgNormDataDict[currentTime] = glucose_blood_level
             bgNormDataX.append(currentTime)
             bgNormDataY.append(glucose_blood_level)
 
         if glucose_blood_level > 180:
-            #bgHighDataDict[currentTime] = glucose_blood_level
             bgHighDataX.append(currentTime)
             bgHighDataY.append(glucose_blood_level)
 
         if glucose_blood_level < 80:
-            #bgLowDataDict[currentTime] = glucose_blood_level
             bgLowDataX.append(currentTime)
             bgLowDataY.append(glucose_blood_level)
 
