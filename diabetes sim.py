@@ -1,3 +1,7 @@
+print("GlucoSim")
+print("A bioinformatical program that models effects on glucose")
+print("Developed by John Kozlosky 2015 - 2017")
+print("\n\n")
 print("Loading...")
 from os import system as osSystem
 from sys import exit
@@ -243,8 +247,8 @@ def sim():
 
 
         #Print basic textual UI to the terminal window
-        print ("Diabetes/Body Energy Simulation Project")
-        print ("2015 - 2016, created by John Kozlosky")
+        print ("GlucoSim v0.2.2-alpha")
+        print ("2015 - 2017, created by John Kozlosky")
         print ("")
         print ("Blood glucose level: " + str(round(glucose_blood_level, 2)) + "mg/dL " + ROC_arrows)
         print ("Blood glucose: " + str(round((glucose_blood/1000), 2)) + "g")
